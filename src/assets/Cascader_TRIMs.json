@@ -1,0 +1,382 @@
+[
+  {
+    "value": "CI",
+    "label": "CI",
+    "children": [
+      {
+        "value": "MID2",
+        "label": "MID2(TRIM1)"
+      },
+      {
+        "value": "MID1",
+        "label": "MID1(TRIM18)"
+      },
+      {
+        "value": "TRIM36",
+        "label": "TRIM36"
+      },
+      {
+        "value": "TRIM46",
+        "label": "TRIM46"
+      },
+      {
+        "value": "TRIM67",
+        "label": "TRIM67"
+      },
+      {
+        "value": "TRIM9",
+        "label": "TRIM9"
+      }
+    ]
+  },
+  {
+    "value": "CII",
+    "label": "CII",
+    "children": [
+      {
+        "value": "TRIM54",
+        "label": "TRIM54"
+      },
+      {
+        "value": "TRIM55",
+        "label": "TRIM55"
+      },
+      {
+        "value": "TRIM63",
+        "label": "TRIM63"
+      }
+    ]
+  },
+  {
+    "value": "CIII",
+    "label": "CIII",
+    "children": [
+      {
+        "value": "TRIM42",
+        "label": "TRIM42"
+      }
+    ]
+  },
+  {
+    "value": "CIV",
+    "label": "CIV",
+    "children": [
+      {
+        "value": "TRIM10",
+        "label": "TRIM10"
+      },
+      {
+        "value": "TRIM11",
+        "label": "TRIM11"
+      },
+      {
+        "value": "TRIM15",
+        "label": "TRIM15"
+      },
+      {
+        "value": "TRIM17",
+        "label": "TRIM17"
+      },
+      {
+        "value": "TRIM21",
+        "label": "TRIM21(Ro52)"
+      },
+      {
+        "value": "TRIM22",
+        "label": "TRIM22"
+      },
+      {
+        "value": "TRIM25",
+        "label": "TRIM25"
+      },
+      {
+        "value": "TRIM26",
+        "label": "TRIM26"
+      },
+      {
+        "value": "TRIM27",
+        "label": "TRIM27"
+      },
+      {
+        "value": "TRIM34",
+        "label": "TRIM34"
+      },
+      {
+        "value": "TRIM35",
+        "label": "TRIM35"
+      },
+      {
+        "value": "TRIM38",
+        "label": "TRIM38"
+      },
+      {
+        "value": "TRIM39",
+        "label": "TRIM39"
+      },
+      {
+        "value": "TRIM4",
+        "label": "TRIM4"
+      },
+      {
+        "value": "TRIM41",
+        "label": "TRIM41"
+      },
+      {
+        "value": "TRIM43",
+        "label": "TRIM43"
+      },
+      {
+        "value": "TRIM47",
+        "label": "TRIM47"
+      },
+      {
+        "value": "TRIM48",
+        "label": "TRIM48"
+      },
+      {
+        "value": "TRIM49",
+        "label": "TRIM49"
+      },
+      {
+        "value": "TRIM5",
+        "label": "TRIM5"
+      },
+      {
+        "value": "TRIM50",
+        "label": "TRIM50"
+      },
+      {
+        "value": "TRIM51",
+        "label": "TRIM51"
+      },
+      {
+        "value": "TRIM53",
+        "label": "TRIM53"
+      },
+      {
+        "value": "TRIM58",
+        "label": "TRIM58"
+      },
+      {
+        "value": "TRIM6",
+        "label": "TRIM6"
+      },
+      {
+        "value": "TRIM60",
+        "label": "TRIM60"
+      },
+      {
+        "value": "TRIM62",
+        "label": "TRIM62"
+      },
+      {
+        "value": "TRIM64",
+        "label": "TRIM64"
+      },
+      {
+        "value": "TRIM65",
+        "label": "TRIM65"
+      },
+      {
+        "value": "TRIM68",
+        "label": "TRIM68"
+      },
+      {
+        "value": "TRIM69",
+        "label": "TRIM69"
+      },
+      {
+        "value": "TRIM7",
+        "label": "TRIM7"
+      },
+      {
+        "value": "TRIM72",
+        "label": "TRIM72"
+      },
+      {
+        "value": "TRIM75",
+        "label": "TRIM75"
+      },
+      {
+        "value": "TRIM77",
+        "label": "TRIM77"
+      },
+      {
+        "value": "TRIML1",
+        "label": "TRIML1(TRIM-like protein1)"
+      }
+    ]
+  },
+  {
+    "value": "CV",
+    "label": "CV",
+    "children": [
+      {
+        "value": "RNF207",
+        "label": "RNF207"
+      },
+      {
+        "value": "PML",
+        "label": "PML(TRIM19)"
+      },
+      {
+        "value": "TRIM31",
+        "label": "TRIM31"
+      },
+      {
+        "value": "TRIM40",
+        "label": "TRIM40"
+      },
+      {
+        "value": "TRIM52",
+        "label": "TRIM52"
+      },
+      {
+        "value": "TRIM56",
+        "label": "TRIM56"
+      },
+      {
+        "value": "TRIM61",
+        "label": "TRIM61"
+      },
+      {
+        "value": "TRIM73",
+        "label": "TRIM73"
+      },
+      {
+        "value": "TRIM74",
+        "label": "TRIM74"
+      },
+      {
+        "value": "TRIM8",
+        "label": "TRIM8"
+      }
+    ]
+  },
+  {
+    "value": "CVI",
+    "label": "CVI",
+    "children": [
+      {
+        "value": "TRIM24",
+        "label": "TRIM24"
+      },
+      {
+        "value": "TRIM28",
+        "label": "TRIM28"
+      },
+      {
+        "value": "TRIM33",
+        "label": "TRIM33"
+      }
+    ]
+  },
+  {
+    "value": "CVII",
+    "label": "CVII",
+    "children": [
+      {
+        "value": "TRIM2",
+        "label": "TRIM2"
+      },
+      {
+        "value": "TRIM3",
+        "label": "TRIM3"
+      },
+      {
+        "value": "TRIM32",
+        "label": "TRIM32"
+      },
+      {
+        "value": "TRIM71",
+        "label": "TRIM71"
+      }
+    ]
+  },
+  {
+    "value": "CVIII",
+    "label": "CVIII",
+    "children": [
+      {
+        "value": "TRIM37",
+        "label": "TRIM37"
+      }
+    ]
+  },
+  {
+    "value": "CIX",
+    "label": "CIX",
+    "children": [
+      {
+        "value": "TRIM23",
+        "label": "TRIM23"
+      }
+    ]
+  },
+  {
+    "value": "CX",
+    "label": "CX",
+    "children": [
+      {
+        "value": "TRIM45",
+        "label": "TRIM45"
+      }
+    ]
+  },
+  {
+    "value": "CXI",
+    "label": "CXI",
+    "children": [
+      {
+        "value": "TRIM13",
+        "label": "TRIM13"
+      },
+      {
+        "value": "TRIM57",
+        "label": "TRIM59"
+      }
+    ]
+  },
+  {
+    "value": "UC",
+    "label": "UC",
+    "children": [
+      {
+        "value": "TRIM14",
+        "label": "TRIM14"
+      },
+      {
+        "value": "TRIM16",
+        "label": "TRIM16"
+      },
+      {
+        "value": "MEFV",
+        "label": "MEFV(TRIM20)"
+      },
+      {
+        "value": "TRIM29",
+        "label": "TRIM29"
+      },
+      {
+        "value": "TRIM44",
+        "label": "TRIM44"
+      },
+      {
+        "value": "TRIM66",
+        "label": "TRIM66"
+      },
+      {
+        "value": "TRIM70",
+        "label": "TRIM70"
+      },
+      {
+        "value": "CMYA5",
+        "label": "CMYA5(TRIM76)"
+      },
+      {
+        "value": "TRIML2",
+        "label": "TRIML2(TRIM-like protein2)"
+      }
+    ]
+  }
+]

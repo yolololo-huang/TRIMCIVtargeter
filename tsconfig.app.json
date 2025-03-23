@@ -1,0 +1,36 @@
+{
+  "extends": "@vue/tsconfig/tsconfig.dom.json",
+  "include": [
+    "env.d.ts",
+    "src/**/*",
+    "src/**/*.js",
+    "src/**/*.ts",
+    "src/**/*.vue",
+    "auto-imports.d.ts",
+    "components.d.ts",
+    "global.d.ts",
+    "types",
+    "public/data"
+  ],
+  "exclude": [
+    "src/**/__tests__/*"
+  ],
+  "compilerOptions": {
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "composite": true,
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "typeRoots": [
+      "./node_modules/@types",
+      "./types"
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    },
+    "noImplicitAny": false,
+    "allowJs": true
+  }
+}

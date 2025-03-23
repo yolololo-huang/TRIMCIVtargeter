@@ -1,0 +1,202 @@
+/* @import './base.css'; */
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+#app {
+  /* max-width: 1903px; */
+  margin: 0 auto;
+  padding: 0 rem;
+  font-weight: normal;
+  width: 100%;
+  height: 100%;
+}
+
+a,
+.green {
+  text-decoration: none;
+  color: #2b6eff(160, 100%, 37%, 1);
+  transition: 0.4s;
+  padding: 3px;
+}
+
+@media (hover: hover) {
+  a:hover {
+    background-color: #ff1e1e(160, 100%, 37%, 0.2);
+    text-decoration: underline;
+  }
+}
+
+@media (min-width: 1024px) {
+  body {
+    display: flex;
+    place-items: center;
+  }
+
+  /* #app {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 0 2rem;
+  } */
+}
+.el-header {
+  background-color: rgb(206, 206, 250);
+  text-align: center;
+  line-height: 60px;
+  height: 60px !important;
+}
+.el-main {
+  max-width: 1024px;
+  line-height: 25px;
+  margin: auto;
+  box-sizing:content-box !important;
+}
+
+.el-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* .TRIMReview {
+  margin: 10px 0;
+  min-width: 800px;
+  min-height: 800px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+} */
+
+.el-card__header {
+  background-color: rgb(206, 206, 250);
+  /* padding-bottom: 5px !important; */
+}
+.card-header span {
+  color: rgb(70, 0, 136); /* 紫色字体 */
+  font-size: 20px;
+  font-weight: bold;
+}
+.card-intro-footer {
+  margin: 0px;
+  font-style: italic;
+  color: gray;
+}
+
+.card-header-intro {
+  margin-top: 10px;
+}
+
+.el-anchor__link {
+  font-size: 18px !important;
+}
+
+.header-container {
+  max-width: 980px;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+}
+
+.index-titles {
+  text-align: center;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: #fffefe; /* 你可以根据需要调整颜色 */
+  font-size: 1em;
+  transition: color 0.3s;
+
+  &:hover {
+    color: #1e90ff; /* 你可以根据需要调整悬停颜色 */
+  }
+}
+
+.purple-box {
+  --el-box-shadow-dark: 0 0px 20px rgba(143, 118, 255, 0.459);
+  padding: 20px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  box-shadow: var(--el-box-shadow-dark);
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.el-card:hover {
+  box-shadow: 0 0px 20px rgba(143, 118, 255, 0.459);
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.download-icon {
+  padding: 10px;
+  text-decoration: none;
+  color: #1e8fff; /* 你可以根据需要调整颜色 */
+  font-size: 1em;
+  transition: color 0.3s;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+
+  &:hover {
+    text-decoration: underline; /* 添加下划线 */
+  }
+}
+
+.custom-popover {
+  font-size: 12px;
+  color: #333;
+  line-height: 1.5;
+}
+.custom-hovertopop {
+  line-height: 0.1;
+  text-align: left;
+  color: gray;
+  font-size: 12px;
+}
+
+.radar-switch {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -20px;
+  align-items: center;
+}
+
+.card-pics {
+  padding: 10px;
+  font-size: 15px;
+}
+.circle-background {
+  display: inline-block;
+  border-radius: 50%;
+  padding: 5px;
+  margin-right: 5px;
+  cursor: pointer;
+}
+.circle-background:hover {
+  color: blue;
+}
+.mf-circle {
+  background-color: rgb(124, 171, 204);
+  color: white;
+}
+.bp-circle {
+  background-color: rgb(231, 188, 210);
+  color: white;
+}
+.cc-circle {
+  background-color: rgb(180, 206, 174);
+  color: white;
+}
+
+.result-layout {
+  width: 100%;
+  max-width: 1900px;
+  margin: auto;
+  align-items: center;
+  justify-content: center;
+}
