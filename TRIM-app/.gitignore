@@ -31,3 +31,5 @@ coverage
 
 README.md
 log.md
+vite.config.ts
+api.js
