@@ -6,7 +6,7 @@ import {
   select,
   zoom,
   interpolateRound,
-  zoomIdentity
+  zoomIdentity,
 } from 'd3'
 
 const scatterPlot = () => {
@@ -38,7 +38,7 @@ const scatterPlot = () => {
         x: x(xValue(d)),
         y: y(yValue(d)),
         TRIM: d['tag'] === 'TRIM',
-        target: d['tag'] === 'target'
+        target: d['tag'] === 'target',
       }
     })
 

@@ -35,25 +35,25 @@
 </template>
 
 <style lang="scss" scoped>
-.title {
-  font-size: 2em;
-  display: flex;
-  align-items: center; /* 垂直居中 */
-}
+  .title {
+    font-size: 2em;
+    display: flex;
+    align-items: center; /* 垂直居中 */
+  }
 
-.header-link {
-  text-decoration: none;
-}
+  .header-link {
+    text-decoration: none;
+  }
 
-.header-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 60px;
-}
+  .header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 60px;
+  }
 
-.nav-links {
-  display: flex;
-  gap: 20px;
-}
+  .nav-links {
+    display: flex;
+    gap: 20px;
+  }
 </style>

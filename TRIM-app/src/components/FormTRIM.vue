@@ -1,150 +1,152 @@
 <script setup lang="ts">
-import type { FormInstance } from 'element-plus'
-import datasetinfo from '@/assets/datasetInfo.json'
-import { fetchSymbolOptions } from '@/services/api'
+  import type { FormInstance } from 'element-plus'
+  import datasetinfo from '@/assets/datasetInfo.json'
+  import { fetchSymbolOptions } from '@/services/api'
 
-const loading = ref(false)
-const loadingStep2 = ref(false)
-const loading_button = ref(false)
-const router = useRouter()
+  const loading = ref(false)
+  const loadingStep2 = ref(false)
+  const loading_button = ref(false)
+  const router = useRouter()
 
-const formRef = ref<FormInstance>()
-const form = reactive({
-  TRIMname: '',
-  uniprotId: '',
-  cancer: ''
-})
+  const formRef = ref<FormInstance>()
+  const form = reactive({
+    TRIMname: '',
+    uniprotId: '',
+    cancer: '',
+  })
 
-const rules = {
-  TRIMname: [{ required: true, message: 'TRIM Name is required', trigger: 'blur' }],
-  uniprotId: [{ required: true, message: 'Uniprot ID is required', trigger: 'blur' }],
-  cancer: [{ required: true, message: 'Cancer is required', trigger: 'blur' }]
-}
+  const rules = {
+    TRIMname: [{ required: true, message: 'TRIM Name is required', trigger: 'blur' }],
+    uniprotId: [{ required: true, message: 'Uniprot ID is required', trigger: 'blur' }],
+    cancer: [{ required: true, message: 'Cancer is required', trigger: 'blur' }],
+  }
 
-interface CancerItem {
-  abbre: string
-  disease: string
-  tableName: string
-}
+  interface CancerItem {
+    abbre: string
+    disease: string
+    tableName: string
+  }
 
-const CancerList = ref<CancerItem[]>([])
-const RecommendedTRIMs = ref([])
+  const CancerList = ref<CancerItem[]>([])
+  const RecommendedTRIMs = ref([])
 
-const processCancerData = (responseData) => {
-  const cancerMap = new Map()
-  datasetinfo
-    .filter((item) => responseData.includes(item.tableName))
-    .forEach((item) => {
-      const key = `${item.abbre} (${item.disease})`
-      if (!cancerMap.has(key)) {
-        cancerMap.set(key, {
-          abbre: item.abbre,
-          disease: item.disease,
-          tableName: item.tableName
-        })
+  const processCancerData = (responseData) => {
+    const cancerMap = new Map()
+    datasetinfo
+      .filter((item) => responseData.includes(item.tableName))
+      .forEach((item) => {
+        const key = `${item.abbre} (${item.disease})`
+        if (!cancerMap.has(key)) {
+          cancerMap.set(key, {
+            abbre: item.abbre,
+            disease: item.disease,
+            tableName: item.tableName,
+          })
+        } else {
+          const existingItem = cancerMap.get(key)
+          existingItem.tableName += `,${item.tableName}`
+        }
+      })
+    return Array.from(cancerMap.values())
+  }
+  const trimCache = new Map()
+
+  const fetchTRIM = async (searchTerm) => {
+    loading.value = true
+    try {
+      let options
+      if (trimCache.has(searchTerm)) {
+        options = trimCache.get(searchTerm)
       } else {
-        const existingItem = cancerMap.get(key)
-        existingItem.tableName += `,${item.tableName}`
+        options = await fetchSymbolOptions(searchTerm, 'TRIM')
+
+        trimCache.set(searchTerm, options)
+      }
+      RecommendedTRIMs.value = options.map((option) => option.gene_name)
+    } catch (error) {
+      console.error('Error fetching TRIM options:', error)
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const fetchCancerList = () => {
+    loading.value = true
+    try {
+      if (form.TRIMname) {
+        const cachedOptions = Array.from(trimCache.values()).flat()
+        const selectedTRIM = cachedOptions.find((option) => option.gene_name === form.TRIMname)
+
+        if (selectedTRIM) {
+          const datasets = selectedTRIM.dataset.split(';').map((item) => item.toLowerCase())
+          CancerList.value = processCancerData(datasets)
+        } else {
+          console.error('No matching TRIM found in cache for', form.TRIMname)
+        }
+      } else {
+        console.error('form.TRIMname is not defined')
+      }
+    } catch (error) {
+      console.error('Error fetching cancer list:', error)
+    } finally {
+      loading.value = false
+    }
+  }
+
+  watch(
+    () => form.TRIMname,
+    async (newTRIMname) => {
+      form.cancer = ''
+      if (newTRIMname) {
+        const newTRIMnameuid = Array.from(trimCache.values())
+          .flat()
+          .find((option) => option.gene_name === form.TRIMname)
+
+        form.uniprotId = newTRIMnameuid.uid
+      } else {
+        form.uniprotId = ''
+      }
+    }
+  )
+
+  const onSubmit = () => {
+    formRef.value?.validate(async (valid) => {
+      if (valid) {
+        try {
+          const formData = {
+            ...form,
+            cancer: Array.from(
+              new Set(
+                (Array.isArray(form.cancer) ? form.cancer : [form.cancer]).join(',').split(',')
+              )
+            ).join(','), // 将数组转换为逗号分隔的字符串
+          }
+          loading_button.value = false
+
+          ElMessage({
+            type: 'success',
+            message: 'Form submitted successfully',
+          })
+
+          router.push({
+            path: '/resultbyTRIM',
+            query: {
+              TRIMname: formData.TRIMname,
+              uniprotId: formData.uniprotId,
+              cancer: formData.cancer,
+            },
+          })
+        } catch (error) {
+          console.error('Error submitting form:', error)
+          ElMessage({
+            type: 'error',
+            message: 'Failed to submit form',
+          })
+          loading_button.value = false
+        }
       }
     })
-  return Array.from(cancerMap.values())
-}
-const trimCache = new Map()
-
-const fetchTRIM = async (searchTerm) => {
-  loading.value = true
-  try {
-    let options
-    if (trimCache.has(searchTerm)) {
-      options = trimCache.get(searchTerm)
-    } else {
-      options = await fetchSymbolOptions(searchTerm, 'TRIM')
-
-      trimCache.set(searchTerm, options)
-    }
-    RecommendedTRIMs.value = options.map((option) => option.symbol)
-  } catch (error) {
-    console.error('Error fetching TRIM options:', error)
-  } finally {
-    loading.value = false
   }
-}
-
-const fetchCancerList = () => {
-  loading.value = true
-  try {
-    if (form.TRIMname) {
-      const cachedOptions = Array.from(trimCache.values()).flat()
-      const selectedTRIM = cachedOptions.find((option) => option.symbol === form.TRIMname)
-
-      if (selectedTRIM) {
-        const datasets = selectedTRIM.dataset.split(';').map((item) => item.toLowerCase())
-        CancerList.value = processCancerData(datasets)
-      } else {
-        console.error('No matching TRIM found in cache for', form.TRIMname)
-      }
-    } else {
-      console.error('form.TRIMname is not defined')
-    }
-  } catch (error) {
-    console.error('Error fetching cancer list:', error)
-  } finally {
-    loading.value = false
-  }
-}
-
-watch(
-  () => form.TRIMname,
-  async (newTRIMname) => {
-    form.cancer = ''
-    if (newTRIMname) {
-      const newTRIMnameuid = Array.from(trimCache.values())
-        .flat()
-        .find((option) => option.symbol === form.TRIMname)
-
-      form.uniprotId = newTRIMnameuid.uid
-    } else {
-      form.uniprotId = ''
-    }
-  }
-)
-
-const onSubmit = () => {
-  formRef.value?.validate(async (valid) => {
-    if (valid) {
-      try {
-        const formData = {
-          ...form,
-          cancer: Array.from(
-            new Set((Array.isArray(form.cancer) ? form.cancer : [form.cancer]).join(',').split(','))
-          ).join(',') // 将数组转换为逗号分隔的字符串
-        }
-        loading_button.value = false
-
-        ElMessage({
-          type: 'success',
-          message: 'Form submitted successfully'
-        })
-
-        router.push({
-          path: '/resultbyTRIM',
-          query: {
-            TRIMname: formData.TRIMname,
-            uniprotId: formData.uniprotId,
-            cancer: formData.cancer
-          }
-        })
-      } catch (error) {
-        console.error('Error submitting form:', error)
-        ElMessage({
-          type: 'error',
-          message: 'Failed to submit form'
-        })
-        loading_button.value = false
-      }
-    }
-  })
-}
 </script>
 
 <template>

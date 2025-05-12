@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import TRIMs_infoTab from '@/assets/TRIMs_infoTab.json'
+  import TRIMs_infoTab from '@/assets/TRIMs_infoTab.json'
 </script>
 
 <template>
@@ -100,12 +100,12 @@ import TRIMs_infoTab from '@/assets/TRIMs_infoTab.json'
 </template>
 
 <style lang="scss" scoped>
-.Nter_highlight {
-  background-color: #bbd0ff;
-  font-weight: 500;
-}
-.Cter_highlight {
-  background-color: #8c07dd;
-  font-weight: 500;
-}
+  .Nter_highlight {
+    background-color: #bbd0ff;
+    font-weight: 500;
+  }
+  .Cter_highlight {
+    background-color: #8c07dd;
+    font-weight: 500;
+  }
 </style>

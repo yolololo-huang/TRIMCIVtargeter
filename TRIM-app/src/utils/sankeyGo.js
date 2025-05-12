@@ -29,7 +29,7 @@ export class SankeyChart {
       .nodePadding(8)
       .extent([
         [1, 50],
-        [width - 1, height - 5]
+        [width - 1, height - 5],
       ])
       .nodeAlign(sankeyJustify) //没有用
       .nodeSort((a, b) => {
@@ -45,13 +45,13 @@ export class SankeyChart {
       MF: d3.schemeSet3[4], // 第5个颜色
       BP: d3.schemeSet3[7],
       CC: d3.schemeSet3[10],
-      TRIM: 'rgb(70, 0, 136, 0.3)'
+      TRIM: 'rgb(70, 0, 136, 0.3)',
     }
     const legendData = [
       { color: colors.MF, label: 'MF' },
       { color: colors.BP, label: 'BP' },
       { color: colors.CC, label: 'CC' },
-      { color: colors.TRIM, label: 'TRIM' }
+      { color: colors.TRIM, label: 'TRIM' },
     ]
 
     const legend = svg.append('g').attr('transform', `translate(5, 5)`)

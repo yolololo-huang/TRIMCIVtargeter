@@ -1,370 +1,372 @@
 <script setup lang="ts">
-import type { CSSProperties } from 'vue'
-import {
-  fetchDegTables,
-  fetchDegPlotData,
-  fetchDegTabData,
-  fetchRecommendedGNsDeg
-} from '@/services/api'
-import { scatterPlot } from '@/utils/degscatterplot.js'
-import Cascader_TRIMs from '@/assets/Cascader_TRIMs.json'
-import Cascader_Dis_label from '@/assets/datasetInfo.json'
-import * as d3 from 'd3'
+  import type { CSSProperties } from 'vue'
+  import {
+    fetchDegTables,
+    fetchDegPlotData,
+    fetchDegTabData,
+    fetchRecommendedGNsDeg,
+  } from '@/services/api'
+  import { scatterPlot } from '@/utils/degscatterplot.js'
+  import Cascader_TRIMs from '@/assets/Cascader_TRIMs.json'
+  import Cascader_Dis_label from '@/assets/datasetInfo.json'
+  import * as d3 from 'd3'
 
-const scatterplotRef = ref(null)
-const selectedDatasetX = ref('')
-const selectedDatasetY = ref('')
-const tableData = ref<Array<Record<string, any>>>([])
-const tableColumns = ref<string[]>([])
-const geneNames = ref<string[]>([])
-const selectedGeneNames = ref<string[]>([])
-const RecommendedGNs = ref()
-const allData = ref<any[]>([])
-const cascaderOptions = ref<any[]>([])
-const selectedDatasets = ref<string[]>([])
-const loading = ref(false)
+  const scatterplotRef = ref(null)
+  const selectedDatasetX = ref('')
+  const selectedDatasetY = ref('')
+  const tableData = ref<Array<Record<string, any>>>([])
+  const tableColumns = ref<string[]>([])
+  const geneNames = ref<string[]>([])
+  const selectedGeneNames = ref<string[]>([])
+  const RecommendedGNs = ref()
+  const allData = ref<any[]>([])
+  const cascaderOptions = ref<any[]>([])
+  const selectedDatasets = ref<string[]>([])
+  const loading = ref(false)
 
-const defaultDatasetX = 'luad_pmid32649874'
-const defaultDatasetY = 'luad_pmid32649877'
+  const defaultDatasetX = 'luad_pmid32649874'
+  const defaultDatasetY = 'luad_pmid32649877'
 
-const props = {
-  expandTrigger: 'hover' as const
-}
-const propsCas = { multiple: true }
+  const props = {
+    expandTrigger: 'hover' as const,
+  }
+  const propsCas = { multiple: true }
 
-const handleNullValues = (data) => {
-  return data.map((item) => {
-    Object.keys(item).forEach((key) => {
-      if (item[key] === null) {
-        item[key] = ''
-      }
-    })
-    return item
-  })
-}
-
-const formatScatterPlotData = (data) => {
-  const resultMap = new Map()
-
-  data.forEach((item) => {
-    const key = item.gene_name
-    if (!resultMap.has(key)) {
-      resultMap.set(key, {
-        gene_name: key,
-        ID_x: '',
-        logFC_x: '',
-        adj_P_Val_x: '',
-        dataset_x: '',
-        ID_y: '',
-        logFC_y: '',
-        adj_P_Val_y: '',
-        dataset_y: ''
+  const handleNullValues = (data) => {
+    return data.map((item) => {
+      Object.keys(item).forEach((key) => {
+        if (item[key] === null) {
+          item[key] = ''
+        }
       })
+      return item
+    })
+  }
+
+  const formatScatterPlotData = (data) => {
+    const resultMap = new Map()
+
+    data.forEach((item) => {
+      const key = item.gene_name
+      if (!resultMap.has(key)) {
+        resultMap.set(key, {
+          gene_name: key,
+          ID_x: '',
+          logFC_x: '',
+          adj_P_Val_x: '',
+          dataset_x: '',
+          ID_y: '',
+          logFC_y: '',
+          adj_P_Val_y: '',
+          dataset_y: '',
+        })
+      }
+
+      const entry = resultMap.get(key)
+
+      if (item.dataset === selectedDatasetX.value) {
+        entry.ID_x = item.ID || ''
+        entry.logFC_x = item.logFC || ''
+        entry.adj_P_Val_x = item.adj_P_Val || ''
+        entry.dataset_x = item.dataset
+      } else if (item.dataset === selectedDatasetY.value) {
+        entry.ID_y = item.ID || ''
+        entry.logFC_y = item.logFC || ''
+        entry.adj_P_Val_y = item.adj_P_Val || ''
+        entry.dataset_y = item.dataset
+      }
+    })
+
+    return Array.from(resultMap.values())
+  }
+
+  const formdegTabData = (data) => {
+    const resultMap = new Map()
+
+    data.forEach((item) => {
+      const key = item.gene_name
+      if (!resultMap.has(key)) {
+        resultMap.set(key, {
+          gene_name: key,
+          [`ID_${item.dataset}`]: '',
+          [`logFC_${item.dataset}`]: null,
+          [`adj_P_Val_${item.dataset}`]: null,
+        })
+      }
+
+      const entry = resultMap.get(key)
+      entry[`ID_${item.dataset}`] = item.ID || ''
+      entry[`logFC_${item.dataset}`] = item.logFC || null
+      entry[`adj_P_Val_${item.dataset}`] = item.adj_P_Val || null
+    })
+
+    return Array.from(resultMap.values())
+  }
+
+  const handleChange = async (axis: 'X' | 'Y', value: any) => {
+    if (axis === 'X') {
+      selectedDatasetX.value = value[value.length - 1]
+    } else if (axis === 'Y') {
+      selectedDatasetY.value = value[value.length - 1]
     }
 
-    const entry = resultMap.get(key)
+    await fetchData() // 重新获取数据
+    updateScatterPlot(allData.value) // 更新绘图
+  }
+  interface CascaderOption {
+    value: string
+    label: string
+    children?: CascaderOption[]
+  }
+  const generateCascaderOptions = (tables: string[]): CascaderOption[] => {
+    const optionsMap: { [key: string]: CascaderOption } = {}
 
-    if (item.dataset === selectedDatasetX.value) {
-      entry.ID_x = item.ID || ''
-      entry.logFC_x = item.logFC || ''
-      entry.adj_P_Val_x = item.adj_P_Val || ''
-      entry.dataset_x = item.dataset
-    } else if (item.dataset === selectedDatasetY.value) {
-      entry.ID_y = item.ID || ''
-      entry.logFC_y = item.logFC || ''
-      entry.adj_P_Val_y = item.adj_P_Val || ''
-      entry.dataset_y = item.dataset
-    }
-  })
+    const labelMap: { [key: string]: string } = {}
+    const diseaseDetailMap: { [key: string]: string } = {}
+    Cascader_Dis_label.forEach((item) => {
+      labelMap[item.tableName] = `${item.abbre} (${item.disease})`
+      diseaseDetailMap[item.tableName] = `${item.dataset} (${item.disease_detail})`
+    })
+    console.log('Cascader_Dis_label', Cascader_Dis_label)
+    tables.forEach((tbNames) => {
+      const parts = tbNames.split('_')
+      const firstPart = parts[0]
 
-  return Array.from(resultMap.values())
-}
+      const lastPart = parts[parts.length - 1]
+      const secondLevelValue = lastPart === 'tcga' ? 'TCGA' : 'MS'
+      const secondLevelLabel = secondLevelValue === 'TCGA' ? 'RNAseq' : 'Mass spectrum'
 
-const formdegTabData = (data) => {
-  const resultMap = new Map()
+      const firstLevelLabel = labelMap[tbNames] || 'fail pairs'
 
-  data.forEach((item) => {
-    const key = item.gene_name
-    if (!resultMap.has(key)) {
-      resultMap.set(key, {
-        gene_name: key,
-        [`ID_${item.dataset}`]: '',
-        [`logFC_${item.dataset}`]: null,
-        [`adj_P_Val_${item.dataset}`]: null
+      if (!optionsMap[firstPart]) {
+        optionsMap[firstPart] = {
+          value: firstPart,
+          label: firstLevelLabel,
+          children: [],
+        }
+      }
+
+      const parentOption = optionsMap[firstPart]
+
+      let secondLevelOption = parentOption.children?.find(
+        (child) => child.value === secondLevelValue
+      )
+      if (!secondLevelOption) {
+        secondLevelOption = {
+          value: secondLevelValue,
+          label: secondLevelLabel,
+          children: [],
+        }
+        parentOption.children?.push(secondLevelOption)
+      }
+
+      secondLevelOption.children?.push({
+        value: tbNames,
+        label: diseaseDetailMap[tbNames] || tbNames,
       })
-    }
-
-    const entry = resultMap.get(key)
-    entry[`ID_${item.dataset}`] = item.ID || ''
-    entry[`logFC_${item.dataset}`] = item.logFC || null
-    entry[`adj_P_Val_${item.dataset}`] = item.adj_P_Val || null
-  })
-
-  return Array.from(resultMap.values())
-}
-
-const handleChange = async (axis: 'X' | 'Y', value: any) => {
-  if (axis === 'X') {
-    selectedDatasetX.value = value[value.length - 1]
-  } else if (axis === 'Y') {
-    selectedDatasetY.value = value[value.length - 1]
+    })
+    return Object.values(optionsMap)
   }
-
-  await fetchData() // 重新获取数据
-  updateScatterPlot(allData.value) // 更新绘图
-}
-interface CascaderOption {
-  value: string
-  label: string
-  children?: CascaderOption[]
-}
-const generateCascaderOptions = (tables: string[]): CascaderOption[] => {
-  const optionsMap: { [key: string]: CascaderOption } = {}
-
-  const labelMap: { [key: string]: string } = {}
-  const diseaseDetailMap: { [key: string]: string } = {}
-  Cascader_Dis_label.forEach((item) => {
-    labelMap[item.tableName] = `${item.abbre} (${item.disease})`
-    diseaseDetailMap[item.tableName] = `${item.dataset} (${item.disease_detail})`
-  })
-
-  tables.forEach((tbNames) => {
-    const parts = tbNames.split('_')
-    const firstPart = parts[0]
-
-    const lastPart = parts[parts.length - 1]
-    const secondLevelValue = lastPart === 'tcga' ? 'TCGA' : 'MS'
-    const secondLevelLabel = secondLevelValue === 'TCGA' ? 'RNAseq' : 'Mass spectrum'
-
-    const firstLevelLabel = labelMap[tbNames] || 'fail pairs'
-
-    if (!optionsMap[firstPart]) {
-      optionsMap[firstPart] = {
-        value: firstPart,
-        label: firstLevelLabel,
-        children: []
+  const getLeafCount = (node) => {
+    if (!node.children) {
+      return 0
+    }
+    let count = 0
+    const stack = [...node.children]
+    while (stack.length) {
+      const current = stack.pop()
+      if (current.children) {
+        stack.push(...current.children)
+      } else {
+        count++
       }
     }
-
-    const parentOption = optionsMap[firstPart]
-
-    let secondLevelOption = parentOption.children?.find((child) => child.value === secondLevelValue)
-    if (!secondLevelOption) {
-      secondLevelOption = {
-        value: secondLevelValue,
-        label: secondLevelLabel,
-        children: []
-      }
-      parentOption.children?.push(secondLevelOption)
-    }
-
-    secondLevelOption.children?.push({
-      value: tbNames,
-      label: diseaseDetailMap[tbNames] || tbNames
-    })
-  })
-  return Object.values(optionsMap)
-}
-const getLeafCount = (node) => {
-  if (!node.children) {
-    return 0
+    return count
   }
-  let count = 0
-  const stack = [...node.children]
-  while (stack.length) {
-    const current = stack.pop()
-    if (current.children) {
-      stack.push(...current.children)
-    } else {
-      count++
-    }
-  }
-  return count
-}
-const fetchData = async () => {
-  const degTables = await fetchDegTables() //表格名
-  cascaderOptions.value = generateCascaderOptions(degTables)
-  if (!selectedDatasetX.value) selectedDatasetX.value = defaultDatasetX
-  if (!selectedDatasetY.value) selectedDatasetY.value = defaultDatasetY
+  const fetchData = async () => {
+    const degTables = await fetchDegTables() //表格名
+    cascaderOptions.value = generateCascaderOptions(degTables)
+    if (!selectedDatasetX.value) selectedDatasetX.value = defaultDatasetX
+    if (!selectedDatasetY.value) selectedDatasetY.value = defaultDatasetY
 
-  const scatterPlotData = await fetchDegPlotData(selectedDatasetX.value, selectedDatasetY.value)
-  scatterPlotData.columns = Object.keys(scatterPlotData[0])
-  allData.value = formatScatterPlotData(scatterPlotData)
+    const scatterPlotData = await fetchDegPlotData(selectedDatasetX.value, selectedDatasetY.value)
+    scatterPlotData.columns = Object.keys(scatterPlotData[0])
+    allData.value = formatScatterPlotData(scatterPlotData)
 
-  const tableDataResponse = await fetchDegTabData('', '')
-  tableData.value = formdegTabData(handleNullValues(tableDataResponse))
-  tableColumns.value = Object.keys(tableData.value[0]).filter(
-    (col) => col === 'gene_name' || col.split('_')[0] === 'logFC'
-  )
-
-  geneNames.value = allData.value.map((d) => d['gene_name'])
-}
-
-const drawScatterPlot = (element, scatterPlotData) => {
-  const width = 600
-  const height = 500
-  const svg = d3.select(element).select('svg').empty()
-    ? d3.select(element).append('svg').attr('width', width).attr('height', height)
-    : d3.select(element).select('svg')
-
-  const plot = scatterPlot()
-    .width(width)
-    .height(height)
-    .data(scatterPlotData)
-    .xValue((d) => d['logFC_x'])
-    .yValue((d) => d['logFC_y'])
-    .margin({
-      top: 20,
-      right: 20,
-      bottom: 40,
-      left: 50
-    })
-    .radius(5)
-    .onClick((d, isSelected) => {
-      if (isSelected) {
-        selectedGeneNames.value = [...selectedGeneNames.value, d]
-      }
-    })
-
-  svg.call(plot)
-}
-
-const initScatterPlot = (element, scatterPlotData) => {
-  drawScatterPlot(element, scatterPlotData)
-}
-
-const updateScatterPlot = (scatterPlotData) => {
-  const element = scatterplotRef.value
-  if (!element) return
-  drawScatterPlot(element, scatterPlotData)
-}
-
-const handleSearch = async (query) => {
-  try {
-    const selectedDatasetsVal = selectedDatasets.value.map((array) => array[array.length - 1])
-    const data = await fetchDegTabData(selectedDatasetsVal.join(','), query)
-    tableData.value = handleNullValues(formdegTabData(data))
-  } catch (error) {
-    console.error('Error fetching data:', error)
-  }
-}
-
-watch([selectedGeneNames, selectedDatasets], async ([newGeneNames, newDatasets]) => {
-  if (newGeneNames.length > 0 || newDatasets.length > 0) {
-    const newDatasetsValue = newDatasets.map((array) => array[array.length - 1])
-    const data = await fetchDegTabData(newDatasetsValue.join(','), newGeneNames.join(','))
-    tableData.value = handleNullValues(formdegTabData(data))
+    const tableDataResponse = await fetchDegTabData('', '')
+    tableData.value = formdegTabData(handleNullValues(tableDataResponse))
     tableColumns.value = Object.keys(tableData.value[0]).filter(
       (col) => col === 'gene_name' || col.split('_')[0] === 'logFC'
     )
-  } else {
-    await fetchData()
+
+    geneNames.value = allData.value.map((d) => d['gene_name'])
   }
-})
 
-const filterTrimRows = async () => {
-  const trims = Cascader_TRIMs.flatMap((array) => array.children.map((child) => child.value))
-  try {
-    const selectedDatasetsVal = selectedDatasets.value.map((array) => array[array.length - 1])
-    const data = await fetchDegTabData(selectedDatasetsVal.join(','), trims.join(','))
-    tableData.value = handleNullValues(formdegTabData(data))
-    selectedGeneNames.value = trims
-  } catch (error) {
-    console.error('Error fetching data:', error)
+  const drawScatterPlot = (element, scatterPlotData) => {
+    const width = 600
+    const height = 500
+    const svg = d3.select(element).select('svg').empty()
+      ? d3.select(element).append('svg').attr('width', width).attr('height', height)
+      : d3.select(element).select('svg')
+
+    const plot = scatterPlot()
+      .width(width)
+      .height(height)
+      .data(scatterPlotData)
+      .xValue((d) => d['logFC_x'])
+      .yValue((d) => d['logFC_y'])
+      .margin({
+        top: 20,
+        right: 20,
+        bottom: 40,
+        left: 50,
+      })
+      .radius(5)
+      .onClick((d, isSelected) => {
+        if (isSelected) {
+          selectedGeneNames.value = [...selectedGeneNames.value, d]
+        }
+      })
+
+    svg.call(plot)
   }
-}
 
-const getCellStyle = ({
-  row,
-  column
-}: {
-  row: Record<string, any>
-  column: { property: string }
-}): CSSProperties => {
-  const colName = column.property
-  if (colName.split('_')[0] === 'logFC') {
-    const dataset = colName.split('_').slice(1).join('_')
-    const adjPValCol = `adj_P_Val_${dataset}`
-    const logFC = parseFloat(row[colName])
-    const adjPVal = parseFloat(row[adjPValCol])
+  const initScatterPlot = (element, scatterPlotData) => {
+    drawScatterPlot(element, scatterPlotData)
+  }
 
-    if (isNaN(logFC) || isNaN(adjPVal)) {
-      return { backgroundColor: '' }
+  const updateScatterPlot = (scatterPlotData) => {
+    const element = scatterplotRef.value
+    if (!element) return
+    drawScatterPlot(element, scatterPlotData)
+  }
+
+  const handleSearch = async (query) => {
+    try {
+      const selectedDatasetsVal = selectedDatasets.value.map((array) => array[array.length - 1])
+      const data = await fetchDegTabData(selectedDatasetsVal.join(','), query)
+      tableData.value = handleNullValues(formdegTabData(data))
+    } catch (error) {
+      console.error('Error fetching data:', error)
     }
+  }
 
-    let backgroundColor = ''
-    let color = 'black'
-    if (adjPVal < 0.01) {
-      if (logFC >= 1) {
-        backgroundColor = 'rgba(233,55,55,0.8)'
-      } else if (logFC <= -1) {
-        backgroundColor = 'rgba(88,141,255,0.8)'
+  watch([selectedGeneNames, selectedDatasets], async ([newGeneNames, newDatasets]) => {
+    if (newGeneNames.length > 0 || newDatasets.length > 0) {
+      const newDatasetsValue = newDatasets.map((array) => array[array.length - 1])
+      const data = await fetchDegTabData(newDatasetsValue.join(','), newGeneNames.join(','))
+      tableData.value = handleNullValues(formdegTabData(data))
+      tableColumns.value = Object.keys(tableData.value[0]).filter(
+        (col) => col === 'gene_name' || col.split('_')[0] === 'logFC'
+      )
+    } else {
+      await fetchData()
+    }
+  })
+
+  const filterTrimRows = async () => {
+    const trims = Cascader_TRIMs.flatMap((array) => array.children.map((child) => child.value))
+    try {
+      const selectedDatasetsVal = selectedDatasets.value.map((array) => array[array.length - 1])
+      const data = await fetchDegTabData(selectedDatasetsVal.join(','), trims.join(','))
+      tableData.value = handleNullValues(formdegTabData(data))
+      selectedGeneNames.value = trims
+    } catch (error) {
+      console.error('Error fetching data:', error)
+    }
+  }
+
+  const getCellStyle = ({
+    row,
+    column,
+  }: {
+    row: Record<string, any>
+    column: { property: string }
+  }): CSSProperties => {
+    const colName = column.property
+    if (colName.split('_')[0] === 'logFC') {
+      const dataset = colName.split('_').slice(1).join('_')
+      const adjPValCol = `adj_P_Val_${dataset}`
+      const logFC = parseFloat(row[colName])
+      const adjPVal = parseFloat(row[adjPValCol])
+
+      if (isNaN(logFC) || isNaN(adjPVal)) {
+        return { backgroundColor: '' }
+      }
+
+      let backgroundColor = ''
+      let color = 'black'
+      if (adjPVal < 0.01) {
+        if (logFC >= 1) {
+          backgroundColor = 'rgba(233,55,55,0.8)'
+        } else if (logFC <= -1) {
+          backgroundColor = 'rgba(88,141,255,0.8)'
+        }
+      } else {
+        color = 'rgba(174, 174, 174, 0.32)'
+      }
+
+      return { backgroundColor, color }
+    }
+    return {}
+  }
+
+  const getInnerDivStyle = ({ column }: { column: { property: string } }): CSSProperties => {
+    const colName = column.property
+    if (colName.split('_')[0] === 'logFC') {
+      return {
+        padding: '3px',
+        borderRadius: '5px',
+        textAlign: 'center' as 'center', // Ensure type compatibility
+        height: '20px',
+        display: 'flex',
+        alignItems: 'center',
       }
     } else {
-      color = 'rgba(174, 174, 174, 0.32)'
-    }
-
-    return { backgroundColor, color }
-  }
-  return {}
-}
-
-const getInnerDivStyle = ({ column }: { column: { property: string } }): CSSProperties => {
-  const colName = column.property
-  if (colName.split('_')[0] === 'logFC') {
-    return {
-      padding: '3px',
-      borderRadius: '5px',
-      textAlign: 'center' as 'center', // Ensure type compatibility
-      height: '20px',
-      display: 'flex',
-      alignItems: 'center'
-    }
-  } else {
-    return {
-      color: 'black',
-      textAlign: 'center' as 'center', // Ensure type compatibility
-      height: '20px',
-      display: 'flex',
-      alignItems: 'center'
+      return {
+        color: 'black',
+        textAlign: 'center' as 'center', // Ensure type compatibility
+        height: '20px',
+        display: 'flex',
+        alignItems: 'center',
+      }
     }
   }
-}
 
-const formatValue = (value: any): string => {
-  if (typeof value === 'number') {
-    return value.toFixed(7)
+  const formatValue = (value: any): string => {
+    if (typeof value === 'number') {
+      return value.toFixed(7)
+    }
+    return value
   }
-  return value
-}
 
-const fetchGeneNames = async (query) => {
-  loading.value = true
-  try {
-    RecommendedGNs.value = await fetchRecommendedGNsDeg(query)
-  } catch (error) {
-    console.error('Error fetching gene names:', error)
-  } finally {
-    loading.value = false
+  const fetchGeneNames = async (query) => {
+    loading.value = true
+    try {
+      RecommendedGNs.value = await fetchRecommendedGNsDeg(query)
+    } catch (error) {
+      console.error('Error fetching gene names:', error)
+    } finally {
+      loading.value = false
+    }
   }
-}
-const downloadResultData = () => {
-  const tsvContent = tableData.value.map((row) => Object.values(row).join('\t')).join('\n')
-  const blob = new Blob([tsvContent], { type: 'text/tab-separated-values;charset=utf-8;' })
-  const link = document.createElement('a')
-  link.href = URL.createObjectURL(blob)
-  link.download = 'resultData.tsv'
-  link.click()
-}
-onMounted(async () => {
-  await fetchData()
-  initScatterPlot(scatterplotRef.value, allData.value)
-
-  watch([selectedDatasetX, selectedDatasetY], async () => {
+  const downloadResultData = () => {
+    const tsvContent = tableData.value.map((row) => Object.values(row).join('\t')).join('\n')
+    const blob = new Blob([tsvContent], { type: 'text/tab-separated-values;charset=utf-8;' })
+    const link = document.createElement('a')
+    link.href = URL.createObjectURL(blob)
+    link.download = 'resultData.tsv'
+    link.click()
+  }
+  onMounted(async () => {
     await fetchData()
-    updateScatterPlot(allData.value)
+    initScatterPlot(scatterplotRef.value, allData.value)
+
+    watch([selectedDatasetX, selectedDatasetY], async () => {
+      await fetchData()
+      updateScatterPlot(allData.value)
+    })
   })
-})
 </script>
 
 <template>
@@ -544,19 +546,19 @@ onMounted(async () => {
 </template>
 
 <style lang="scss" scoped>
-.degScatterplot {
-  width: 500px;
-  height: 500px;
-}
+  .degScatterplot {
+    width: 500px;
+    height: 500px;
+  }
 
-.search-container {
-  display: flex;
-  align-items: center;
-  margin-top: 20px;
-}
+  .search-container {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+  }
 
-.xymenu {
-  width: 400px;
-  margin: 4px;
-}
+  .xymenu {
+    width: 400px;
+    margin: 4px;
+  }
 </style>

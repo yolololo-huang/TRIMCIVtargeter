@@ -1,14 +1,14 @@
 import axios from 'axios'
 
-const API_BASE_URL = '/backend/api' //import.meta.env.VITE_API_BASE_URL
-// const API_BASE_URL = '/api'
+// const API_BASE_URL = '/backend/api' //import.meta.env.VITE_API_BASE_URL
+const API_BASE_URL = '/api'
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
   withCredentials: true, // 允许发送和接收 Cookies
   headers: {
-    'Content-Type': 'application/json'
-  }
+    'Content-Type': 'application/json',
+  },
 })
 
 export const checkCookiesAccepted = async () => {
@@ -45,7 +45,7 @@ export const fetchDegTables = async () => {
 export const fetchDegPlotData = async (datasetX, datasetY) => {
   try {
     const response = await apiClient.get('/degPlot', {
-      params: { datasetX, datasetY }
+      params: { datasetX, datasetY },
     })
     return response.data
   } catch (error) {
@@ -58,7 +58,7 @@ export const fetchDegTabData = async (datasets, GNs) => {
   try {
     const params = {
       datasets: Array.isArray(datasets) ? datasets.join(',') : datasets,
-      GNs: Array.isArray(GNs) ? GNs.join(',') : GNs
+      GNs: Array.isArray(GNs) ? GNs.join(',') : GNs,
     }
     const response = await apiClient.get('/degTab', { params })
     return response.data
@@ -71,7 +71,7 @@ export const fetchDegTabData = async (datasets, GNs) => {
 export const fetchRecommendedGNsDeg = async (query) => {
   try {
     const response = await apiClient.get('/searchGeneNamesDegdb', {
-      params: { searchTerm: query }
+      params: { searchTerm: query },
     })
     return response.data
   } catch (error) {
@@ -110,7 +110,7 @@ export const fetchCorTRIMsData = async (dataset, TRIMs, geneNames) => {
 export const fetchRecommendedGNsCor = async (query) => {
   try {
     const response = await apiClient.get('/searchGeneNamesCordb', {
-      params: { searchTerm: query }
+      params: { searchTerm: query },
     })
     return response.data
   } catch (error) {
@@ -123,7 +123,7 @@ export const fetchRecommendedGNsCor = async (query) => {
 export const fetchResOverview = async (query) => {
   try {
     const response = await apiClient.get('/getResOverview', {
-      params: { TRIMnum: query }
+      params: { TRIMnum: query },
     })
     return response.data
   } catch (error) {
@@ -136,7 +136,7 @@ export const fetchResOverview = async (query) => {
 export const fetchSymbolOptions = async (searchTerm, type) => {
   try {
     const response = await apiClient.get('/getSymbolOptions', {
-      params: { searchTerm: searchTerm, type: type }
+      params: { searchTerm: searchTerm, type: type },
     })
     return response.data
   } catch (error) {
@@ -158,7 +158,7 @@ export const fetchCancerOptions = async () => {
 export const fupdateSymbolOptions = async (searchTerm, cancerList, type) => {
   try {
     const response = await apiClient.get('/getupdateSymbolOptions', {
-      params: { searchTerm: searchTerm, cancerList: cancerList, type: type }
+      params: { searchTerm: searchTerm, cancerList: cancerList, type: type },
     })
     return response.data
   } catch (error) {
@@ -169,7 +169,7 @@ export const fupdateSymbolOptions = async (searchTerm, cancerList, type) => {
 export const fupdateCancerOptions = async (symbol, type) => {
   try {
     const response = await apiClient.get('/getupdateCancerOptions', {
-      params: { symbol: symbol, type: type }
+      params: { symbol: symbol, type: type },
     })
     return response.data
   } catch (error) {
@@ -180,7 +180,7 @@ export const fupdateCancerOptions = async (symbol, type) => {
 export const fetchRecommendedGNsUid = async (geneName) => {
   try {
     const response = await apiClient.get(`/uid`, {
-      params: { searchTerm: geneName }
+      params: { searchTerm: geneName },
     })
     return response.data
   } catch (error) {
@@ -192,7 +192,7 @@ export const fetchRecommendedGNsUid = async (geneName) => {
 export const fetchResult = async (formData) => {
   try {
     const response = await apiClient.get(`/submitForm`, {
-      params: formData
+      params: formData,
     })
     return response.data
   } catch (error) {
@@ -204,7 +204,7 @@ export const fetchResult = async (formData) => {
 export const fetchResbyTRIM = async (formData) => {
   try {
     const response = await apiClient.get(`/submitFormbyTRIM`, {
-      params: formData
+      params: formData,
     })
     return response.data
   } catch (error) {
@@ -216,7 +216,7 @@ export const fetchResbyTRIM = async (formData) => {
 export const fetchGO = async (symbol1, symbol2) => {
   try {
     const response = await apiClient.get(`/getGO`, {
-      params: { symbol1: symbol1, symbol2: symbol2 }
+      params: { symbol1: symbol1, symbol2: symbol2 },
     })
     return response.data
   } catch (error) {
@@ -239,7 +239,7 @@ export const downloadTableData = async (tableName) => {
   try {
     const response = await apiClient.get('/downloadTable', {
       params: { tableName },
-      responseType: 'blob' // Ensure the response is treated as a blob
+      responseType: 'blob', // Ensure the response is treated as a blob
     })
     return response
   } catch (error) {

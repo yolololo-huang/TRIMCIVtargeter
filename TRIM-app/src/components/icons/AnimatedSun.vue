@@ -1,21 +1,21 @@
 <script setup lang="ts">
-import { gsap } from 'gsap'
+  import { gsap } from 'gsap'
 
-const size = 100 // Size of the sun
-const sun = ref<SVGSVGElement | null>(null)
-const rays = ref<SVGGElement | null>(null)
+  const size = 100 // Size of the sun
+  const sun = ref<SVGSVGElement | null>(null)
+  const rays = ref<SVGGElement | null>(null)
 
-onMounted(async () => {
-  if (rays.value) {
-    gsap.to(rays.value, {
-      rotate: 360,
-      repeat: -1,
-      duration: 20,
-      ease: 'linear',
-      transformOrigin: '50% 50%'
-    })
-  }
-})
+  onMounted(async () => {
+    if (rays.value) {
+      gsap.to(rays.value, {
+        rotate: 360,
+        repeat: -1,
+        duration: 20,
+        ease: 'linear',
+        transformOrigin: '50% 50%',
+      })
+    }
+  })
 </script>
 
 <template>

@@ -1,56 +1,56 @@
 <script setup lang="ts">
-import { downloadTableData } from '@/services/api'
-import datasetInfo from '@/assets/datasetInfo.json'
+  import { downloadTableData } from '@/services/api'
+  import datasetInfo from '@/assets/datasetInfo.json'
 
-const itemsPerPage = 9
-const currentPage = ref(1)
-const totalItems = datasetInfo.length
+  const itemsPerPage = 9
+  const currentPage = ref(1)
+  const totalItems = datasetInfo.length
 
-const selectedFilters = ref<string[]>([])
+  const selectedFilters = ref<string[]>([])
 
-// 生成唯一的选项
-const uniqueOptions = computed<string[]>(() => {
-  const optionsSet = new Set<string>()
-  datasetInfo.forEach((item) => {
-    optionsSet.add(`${item.abbre} (${item.disease})`)
+  // 生成唯一的选项
+  const uniqueOptions = computed<string[]>(() => {
+    const optionsSet = new Set<string>()
+    datasetInfo.forEach((item) => {
+      optionsSet.add(`${item.abbre} (${item.disease})`)
+    })
+    return Array.from(optionsSet)
   })
-  return Array.from(optionsSet)
-})
 
-const paginatedItems = computed(() => {
-  const filteredItems = selectedFilters.value.length
-    ? datasetInfo.filter((item) =>
-        selectedFilters.value.includes(`${item.abbre} (${item.disease})`)
-      )
-    : datasetInfo
+  const paginatedItems = computed(() => {
+    const filteredItems = selectedFilters.value.length
+      ? datasetInfo.filter((item) =>
+          selectedFilters.value.includes(`${item.abbre} (${item.disease})`)
+        )
+      : datasetInfo
 
-  const start = (currentPage.value - 1) * itemsPerPage
-  const end = start + itemsPerPage
-  return filteredItems.slice(start, end)
-})
+    const start = (currentPage.value - 1) * itemsPerPage
+    const end = start + itemsPerPage
+    return filteredItems.slice(start, end)
+  })
 
-const handlePageChange = (page) => {
-  currentPage.value = page
-}
-
-const currentItemsCount = computed(() => {
-  return paginatedItems.value.length
-})
-
-const downloadData = async (tableName) => {
-  try {
-    const response = await downloadTableData(tableName)
-    const url = window.URL.createObjectURL(new Blob([response.data]))
-    const link = document.createElement('a')
-    link.href = url
-    link.setAttribute('download', `${tableName}.tsv`)
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-  } catch (error) {
-    console.error('Error downloading data:', error)
+  const handlePageChange = (page) => {
+    currentPage.value = page
   }
-}
+
+  const currentItemsCount = computed(() => {
+    return paginatedItems.value.length
+  })
+
+  const downloadData = async (tableName) => {
+    try {
+      const response = await downloadTableData(tableName)
+      const url = window.URL.createObjectURL(new Blob([response.data]))
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', `${tableName}.tsv`)
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+    } catch (error) {
+      console.error('Error downloading data:', error)
+    }
+  }
 </script>
 
 <template>
@@ -61,9 +61,9 @@ const downloadData = async (tableName) => {
     <h2>Dataset Information</h2>
     <p>
       We provide a list of pre-computed prediction for targets of TRIMCIV members in 26 cancers
-      including 9 proteomic datasets and 26 transcriptomic datasets and the corresponding QC supplementary data. The
-      prediction in different dataset provided in the TSV format could be download below. TCGA and
-      GTEX data is sourcing from UCSC database.
+      including 9 proteomic datasets and 26 transcriptomic datasets and the corresponding QC
+      supplementary data. The prediction in different dataset provided in the TSV format could be
+      download below. TCGA and GTEX data is sourcing from UCSC database.
     </p>
     <ResOverview />
     <div style="margin-top: 50px; font-weight: bold">
@@ -134,16 +134,16 @@ const downloadData = async (tableName) => {
 </template>
 
 <style scoped>
-.dataset-card {
-  margin-bottom: 20px;
-  line-height: 1.2;
-  font-size: small;
-}
-.pagination-info {
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 20px 0;
-}
+  .dataset-card {
+    margin-bottom: 20px;
+    line-height: 1.2;
+    font-size: small;
+  }
+  .pagination-info {
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0;
+  }
 </style>

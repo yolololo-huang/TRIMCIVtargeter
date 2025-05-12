@@ -1,10 +1,10 @@
 <script setup lang="ts">
-const scrollTo = (id: string) => {
-  const element = document.getElementById(id)
-  if (element) {
-    element.scrollIntoView({ behavior: 'smooth' })
+  const scrollTo = (id: string) => {
+    const element = document.getElementById(id)
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' })
+    }
   }
-}
 </script>
 
 <template>
@@ -320,18 +320,18 @@ const scrollTo = (id: string) => {
 </template>
 
 <style scoped>
-.el-card:hover {
-  box-shadow: 0 0px 20px rgba(143, 118, 255, 0.459);
-  transition: box-shadow 0.3s ease-in-out;
-}
-.el-menu-vertical {
-  margin: auto;
-  width: 100%;
-}
+  .el-card:hover {
+    box-shadow: 0 0px 20px rgba(143, 118, 255, 0.459);
+    transition: box-shadow 0.3s ease-in-out;
+  }
+  .el-menu-vertical {
+    margin: auto;
+    width: 100%;
+  }
 
-.help-img {
-  margin-top: 10px;
-  text-align: center;
-  margin-bottom: 10px;
-}
+  .help-img {
+    margin-top: 10px;
+    text-align: center;
+    margin-bottom: 10px;
+  }
 </style>

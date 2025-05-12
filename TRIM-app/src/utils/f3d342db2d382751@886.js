@@ -72,8 +72,8 @@ function _14(Plot, athletes) {
     grid: true,
     marks: [
       Plot.rectY(athletes, Plot.binX({ y: 'count' }, { x: 'weight', fill: 'sex', fy: 'sex' })),
-      Plot.ruleY([0])
-    ]
+      Plot.ruleY([0]),
+    ],
   })
 }
 
@@ -113,43 +113,43 @@ function _19(htl, previews) {
       {
         path: '@observablehq/plot-marks?collection=@observablehq/plot',
         thumbnail: '17e04344c0f0cee103a18bfd0853f6af30baa28f0439d19dc231a473373ab8f5',
-        title: 'Marks and Channels'
+        title: 'Marks and Channels',
       },
       {
         path: '@observablehq/plot-scales?collection=@observablehq/plot',
         thumbnail: 'fc104fd0099a7333f000901b3d9a38e4b4f8a9e8bac40ffd746aab1cc9f21fa5',
-        title: 'Scales'
+        title: 'Scales',
       },
       {
         path: '@observablehq/plot-axes?collection=@observablehq/plot',
         thumbnail: '61ef43e3641638a2c8745ff587efd2b9976e70ea8ad94b7e6e5dca4023214d85',
-        title: 'Axes'
+        title: 'Axes',
       },
       {
         path: '@observablehq/plot-transforms?collection=@observablehq/plot',
         thumbnail: 'c7c6bd4e567a9e3081d3c56e19d91ddc56c4591e7d281ab601188c3018a70c5f',
-        title: 'Transforms'
+        title: 'Transforms',
       },
       {
         path: '@observablehq/plot-facets?collection=@observablehq/plot',
         thumbnail: 'e58c30cf3f770a5b5b2c1b1cb76ac20b77dc5364c713158e044324c785233f3e',
-        title: 'Facets'
+        title: 'Facets',
       },
       {
         path: '@observablehq/plot-legends?collection=@observablehq/plot',
         thumbnail: '35db49733fa8e379ee43991bce223d6b426640cc426e8f506c112286778caa11',
-        title: 'Legends'
+        title: 'Legends',
       },
       {
         path: '@observablehq/plot-projections?collection=@observablehq/plot',
         thumbnail: 'dc5a5bb1addccb577197417b527c780c93e3beaef5320c885624ae179d623ea8',
-        title: 'Projections'
+        title: 'Projections',
       },
       {
         path: '@observablehq/plot-mapping?collection=@observablehq/plot',
         thumbnail: '02dc8bc250505e431f0ba894d600cb034bcb5fc0be4ee55252712916a19d444f',
-        title: 'Maps'
-      }
+        title: 'Maps',
+      },
     ],
     { target: null }
   )}`
@@ -171,118 +171,118 @@ function _21(htl, previews) {
       {
         path: '@observablehq/plot-area?collection=@observablehq/plot',
         thumbnail: 'f0a4487c91350493f1880454fbbdf91c421f9bd8868af4936757be73a8717b7b',
-        title: 'Area'
+        title: 'Area',
       },
       {
         path: '@observablehq/plot-arrow?collection=@observablehq/plot',
         thumbnail: '91bc584168279712c59bec43091e2407e50c31362cec3b1420ba1f97115e5a73',
-        title: 'Arrow'
+        title: 'Arrow',
       },
       {
         path: '@observablehq/plot-auto?collection=@observablehq/plot',
         thumbnail: 'b8118f4945bbeec180e55a4c6a2f96ab0ae1ad93b1d77dd62329f98f7f1ef523',
-        title: 'Auto'
+        title: 'Auto',
       },
       {
         path: '@observablehq/plot-bar?collection=@observablehq/plot',
         thumbnail: '3d378538d99293ba7b7285b0e70fe18009337de7dd829c75dbd6d693517432ca',
-        title: 'Bar'
+        title: 'Bar',
       },
       {
         path: '@observablehq/plot-box?collection=@observablehq/plot',
         thumbnail: 'd0c067bba581b4496a1bbbc8209f24e297de23445b437ac3c81a2a2e013b9778',
-        title: 'Box'
+        title: 'Box',
       },
       {
         path: '@observablehq/plot-cell?collection=@observablehq/plot',
         thumbnail: 'b5b820dbad95e6a67205c6b930f07e9cc926bdd5d43e1286146dd86cafaeedef',
-        title: 'Cell'
+        title: 'Cell',
       },
       {
         path: '@observablehq/plot-contour?collection=@observablehq/plot',
         thumbnail: '49cd7536ea0fac9334f3cd1b0b5b7bd60b7c93e6f920e3c6359817261c2c241a',
-        title: 'Contour'
+        title: 'Contour',
       },
       {
         path: '@observablehq/plot-delaunay?collection=@observablehq/plot',
         thumbnail: '10eb7be4221d152d6caa5782696df4b57d2b411e5980e92ac789b303176a4484',
-        title: 'Delaunay'
+        title: 'Delaunay',
       },
       {
         path: '@observablehq/plot-density?collection=@observablehq/plot',
         thumbnail: '0437302677376a942aa51f44f24491ad10fed95b427ab747f2d8221b5339e868',
-        title: 'Density'
+        title: 'Density',
       },
       {
         path: '@observablehq/plot-dot?collection=@observablehq/plot',
         thumbnail: '323235720172d6fee0ef5d6168490cbed268c9033ae120b4c91ad2b266bdd184',
-        title: 'Dot'
+        title: 'Dot',
       },
       {
         path: '@observablehq/plot-geo?collection=@observablehq/plot',
         thumbnail: '8f82539b36f5f734374bdf7ce911223054432a29f63300ef9d137c934bec5e5d',
-        title: 'Geo'
+        title: 'Geo',
       },
       {
         path: '@observablehq/plot-image?collection=@observablehq/plot',
         thumbnail: '460aa771e3208a4e3f45d4ed85c50c85516bca054d4606ea6649a48fcc4f111e',
-        title: 'Image'
+        title: 'Image',
       },
       {
         path: '@observablehq/plot-line?collection=@observablehq/plot',
         thumbnail: '42bfda8e0c228d0dbc5e661296742a4ec39baf9f9c60c280be85d237e0cd73fc',
-        title: 'Line'
+        title: 'Line',
       },
       {
         path: '@observablehq/plot-linear-regression?collection=@observablehq/plot',
         thumbnail: 'ee0e226b7139db9e9f9f68d93e08938e21f915bb815e88ead2db2ad28e76280c',
-        title: 'Linear Regression'
+        title: 'Linear Regression',
       },
       {
         path: '@observablehq/plot-link?collection=@observablehq/plot',
         thumbnail: '3eac02b86fdaa4ed37924a8f8c7b582e77211136493f0bccdc1f8153e72d8297',
-        title: 'Link'
+        title: 'Link',
       },
       {
         path: '@observablehq/plot-raster?collection=@observablehq/plot',
         thumbnail: '130f8ec065a4ccc5de0a45725ede04dcc2144ee807c6c232460b5db52f9bfb14',
-        title: 'Raster'
+        title: 'Raster',
       },
       {
         path: '@observablehq/plot-rect?collection=@observablehq/plot',
         thumbnail: 'e4bf03d155af21a24533562d7fa68d3de7b69039f83294594bd3db0f7e5fa934',
-        title: 'Rect'
+        title: 'Rect',
       },
       {
         path: '@observablehq/plot-rule?collection=@observablehq/plot',
         thumbnail: '06ba94eeed4d9b60d019cf8f0b032e27b4c4936fe3ad13b2dc47b79e871ffcf7',
-        title: 'Rule'
+        title: 'Rule',
       },
       {
         path: '@observablehq/plot-text?collection=@observablehq/plot',
         thumbnail: '38ce703e6382ebc50f3f9015b5216ce824c312ddca03f7b345823010685fc914',
-        title: 'Text'
+        title: 'Text',
       },
       {
         path: '@observablehq/plot-tick?collection=@observablehq/plot',
         thumbnail: '17ac3016ac7dc061e904156a0c7631abdaa60f541e9127c4c4c4bdef5b06fe3f',
-        title: 'Tick'
+        title: 'Tick',
       },
       {
         path: '@observablehq/plot-tree?collection=@observablehq/plot',
         thumbnail: '40026ebe38b28341b040e4a1df6ba2dd78d41df11fb185657c1427cbc7ea65df',
-        title: 'Tree'
+        title: 'Tree',
       },
       {
         path: '@observablehq/plot-vector?collection=@observablehq/plot',
         thumbnail: 'ad91e0b1ab74040f4fecfc74b5415671394179bc267d0a9e77ba2242e981ffbd',
-        title: 'Vector'
+        title: 'Vector',
       },
       {
         path: '@observablehq/plot-frame?collection=@observablehq/plot',
         thumbnail: '0a551b1d232053a3a8c1bb868e09d1754ad7c054822766b566843a575ab9d183',
-        title: 'Frame'
-      }
+        title: 'Frame',
+      },
     ],
     { target: null }
   )}`
@@ -304,53 +304,53 @@ function _23(htl, previews) {
       {
         path: '@observablehq/plot-group?collection=@observablehq/plot',
         thumbnail: '17ae90540a6c2e950dc2625a1217297ed9a177ae48c3535c61893b1b49213990',
-        title: 'Group'
+        title: 'Group',
       },
       {
         path: '@observablehq/plot-bin?collection=@observablehq/plot',
         thumbnail: '6c7912a62a512d88ee539cb621b8d7334b97ef60e60a6437b711aed32ec4f418',
-        title: 'Bin'
+        title: 'Bin',
       },
       {
         path: '@observablehq/plot-stack?collection=@observablehq/plot',
         thumbnail: 'e9cc1076c63314fb1f644b2eaca629480682a46085c0fa6bf032b04f8ab4c882',
-        title: 'Stack'
+        title: 'Stack',
       },
       {
         path: '@observablehq/plot-map?collection=@observablehq/plot',
         thumbnail: '664128766139683663b4a54e4d6fb7fe023bb14504da53a6ab8d5845b521646e',
-        title: 'Map'
+        title: 'Map',
       },
       {
         path: '@observablehq/plot-window?collection=@observablehq/plot',
         thumbnail: 'a675ab3e532f9beef208148886f1b667fac06148ddedad19f33b60ced8c0f612',
-        title: 'Window'
+        title: 'Window',
       },
       {
         path: '@observablehq/plot-select?collection=@observablehq/plot',
         thumbnail: '7901ac621b6ad99134bc3d532a92fb1274836b14b829529c500a38a1cad48c71',
-        title: 'Select'
+        title: 'Select',
       },
       {
         path: '@observablehq/plot-interval?collection=@observablehq/plot',
         thumbnail: 'e3916c7ce03e0a15565e9a4447e3524f98d28d620c3c38a97461b4a56453aa20',
-        title: 'Interval'
+        title: 'Interval',
       },
       {
         path: '@observablehq/plot-dodge?collection=@observablehq/plot',
         thumbnail: 'c5edc82ad424d0698c9b8a397dc73a413ad3a1c19fba70385dcbfda52cc9c0c7',
-        title: 'Dodge'
+        title: 'Dodge',
       },
       {
         path: '@observablehq/plot-centroid?collection=@observablehq/plot',
         thumbnail: '6c439558adf373275c46e5763a9d3568c6d6609cf727a99d7db7f32b359b6cc7',
-        title: 'Centroid'
+        title: 'Centroid',
       },
       {
         path: '@observablehq/plot-hexbin?collection=@observablehq/plot',
         thumbnail: '1fe95f593aa40f969b2be9b86aa4c5c2cd7e6435ac895ffc09fd885ee4f7e8bf',
-        title: 'Hexbin'
-      }
+        title: 'Hexbin',
+      },
     ],
     { target: null }
   )}`
@@ -427,9 +427,9 @@ export default function define(runtime, observer) {
           import.meta.url
         ),
         mimeType: 'text/csv',
-        toString
-      }
-    ]
+        toString,
+      },
+    ],
   ])
   main.builtin(
     'FileAttachment',

@@ -1,16 +1,16 @@
 <script setup lang="ts">
-const locale = {
-  TRIMtree: 'Protein Sequence Relationship',
-  TRIMheatmap: 'Structure Similarity Landscape',
-  TRIMinfo: 'Classification Review'
-}
-
-const scrollTo = (id: string) => {
-  const element = document.getElementById(id)
-  if (element) {
-    element.scrollIntoView({ behavior: 'smooth' })
+  const locale = {
+    TRIMtree: 'Protein Sequence Relationship',
+    TRIMheatmap: 'Structure Similarity Landscape',
+    TRIMinfo: 'Classification Review',
   }
-}
+
+  const scrollTo = (id: string) => {
+    const element = document.getElementById(id)
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
 </script>
 
 <template>
@@ -37,7 +37,7 @@ const scrollTo = (id: string) => {
   </el-affix>
   <el-main>
     <el-row class="TRIMfamily">
-      <!-- <el-col :span="5">
+      <el-col :span="5">
         <h1>TRIM Family</h1>
         <div class="brief-info">
           <div style="width: 500px">
@@ -60,7 +60,7 @@ const scrollTo = (id: string) => {
             <router-link to="/trim-ref">Reported targets<IconExternalLink /></router-link>
           </div>
         </div>
-      </el-col> -->
+      </el-col>
       <el-col :span="19"><PDBviewer2 /></el-col>
     </el-row>
 
@@ -80,16 +80,16 @@ const scrollTo = (id: string) => {
 </template>
 
 <style lang="scss" scoped>
-.TRIMfamily {
-  width: 1000px;
-  height: auto;
-  margin: 0 auto;
-}
+  .TRIMfamily {
+    width: 1000px;
+    height: auto;
+    margin: 0 auto;
+  }
 
-.brief-info {
-  line-height: 2;
-}
-.section {
-  scroll-margin-top: 120px; /* 偏移量，例如向上偏移 100px */
-}
+  .brief-info {
+    line-height: 2;
+  }
+  .section {
+    scroll-margin-top: 120px; /* 偏移量，例如向上偏移 100px */
+  }
 </style>

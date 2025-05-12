@@ -15,22 +15,22 @@
 </template>
 
 <style lang="scss">
-.demo-tabs {
-  --el-box-shadow-dark: 0 15px 20px rgba(143, 118, 255, 0.459);
+  .demo-tabs {
+    --el-box-shadow-dark: 0 15px 20px rgba(143, 118, 255, 0.459);
 
-  background-color: rgba(255, 255, 255, 0.319);
-  border-radius: 4px;
-}
+    background-color: rgba(255, 255, 255, 0.319);
+    border-radius: 4px;
+  }
 
-.demo-tabs > .el-tabs__content {
-  padding: 32px;
-  color: #6b778c;
-  font-size: 32px;
-  font-weight: 600;
-}
+  .demo-tabs > .el-tabs__content {
+    padding: 32px;
+    color: #6b778c;
+    font-size: 32px;
+    font-weight: 600;
+  }
 
-.el-tabs__item {
-  color: rgba(94, 73, 95, 0.527);
-  font-weight: bold;
-}
+  .el-tabs__item {
+    color: rgba(94, 73, 95, 0.527);
+    font-weight: bold;
+  }
 </style>

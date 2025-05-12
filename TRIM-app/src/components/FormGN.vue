@@ -1,263 +1,249 @@
 <script lang="ts" setup>
-import { fetchSymbolOptions, fupdateCancerOptions, fetchRecommendedGNsUid } from '@/services/api'
-import type { FormInstance } from 'element-plus'
-import FormLoading from '@/components/icons/FormLoading.vue'
-import datasetinfo from '@/assets/datasetInfo.json'
-import emailjs from '@emailjs/browser'
-const router = useRouter()
-const formRef = ref<FormInstance>()
-const loading = ref(false)
-const loadingStep2 = ref(false)
-const loading_button = ref(false)
-const isFetchUniprotIdsActivated = ref(false)
-const warningSubmit = ref(false)
-const form = reactive({
-  geneName: '',
-  uniprotId: '',
-  cancer: ''
-})
-
-const rules = {
-  geneName: [{ required: true, message: 'Gene Name is required', trigger: 'blur' }],
-  uniprotId: [{ required: true, message: 'Uniprot ID is required', trigger: 'blur' }],
-  cancer: [{ required: true, message: 'Cancer is required', trigger: 'blur' }]
-}
-
-const RecommendedOptions = ref<Array<{ symbol: string; uid: string }>>([])
-const RecommendedGNs = ref<string[]>([])
-const RecommendedGNuid = ref<Array<{ uid: string; label: string }>>([])
-const CancerList = ref<Array<{ abbre: string; disease: string; tableName: string }>>([])
-
-const cancerMap = new Map()
-const processCancerData = (responseData) => {
-  datasetinfo
-    .filter((item) => responseData.includes(item.tableName))
-    .forEach((item) => {
-      const key = `${item.abbre} (${item.disease})`
-      if (!cancerMap.has(key)) {
-        cancerMap.set(key, {
-          abbre: item.abbre,
-          disease: item.disease,
-          tableName: item.tableName
-        })
-      } else {
-        const existingItem = cancerMap.get(key)
-        existingItem.tableName += `,${item.tableName}`
-      }
-    })
-  return Array.from(cancerMap.values())
-}
-const cancerListCache = new Map()
-const fetchCancerList = async () => {
-  loading.value = true
-  try {
-    let responseData
-    if (form.geneName) {
-      if (cancerListCache.has(form.geneName)) {
-        responseData = cancerListCache.get(form.geneName)
-      } else {
-        responseData = await fupdateCancerOptions(form.geneName, 'Target')
-        cancerListCache.set(form.geneName, responseData)
-      }
-    }
-    CancerList.value = processCancerData(responseData)
-  } catch (error) {
-    console.error('Error fetching CancerList:', error)
-  } finally {
-    loading.value = false
-  }
-}
-
-const fetchGeneNames = async (searchTerm) => {
-  loading.value = true
-  try {
-    RecommendedOptions.value = await fetchSymbolOptions(searchTerm, 'Target')
-    RecommendedGNs.value = [...new Set(RecommendedOptions.value.map((option) => option.symbol))]
-  } catch (error) {
-    console.error('Error fetching gene names:', error)
-  } finally {
-    loading.value = false
-  }
-}
-
-// 监听 form.geneName 的变化
-watch(
-  () => form.geneName,
-  async (newGeneName) => {
-    form.cancer = ''
-    if (newGeneName) {
-      const newGeneNameuid = RecommendedOptions.value
-        .filter((option) => option.symbol === newGeneName)
-        .map((item) => item.uid)
-      form.uniprotId = newGeneNameuid[0] || ''
-    } else {
-      RecommendedGNuid.value = []
-      form.uniprotId = ''
-    }
-  }
-)
-
-const fetchUniprotIds = async () => {
-  loading.value = true
-  isFetchUniprotIdsActivated.value = true
-  try {
-    // IF NOT NONE
-    const responseData = await fetchRecommendedGNsUid(form.geneName)
-    responseData.forEach((item) => {
-      if (item.entry_type === 'reviewed') {
-        item.label = `${item.uid}(reviewed)`
-      } else {
-        item.label = item.uid
-      }
-    })
-    RecommendedGNuid.value = responseData
-  } catch (error) {
-    console.error('Error fetching uniprot ids:', error)
-  } finally {
-    loading.value = false
-  }
-}
-watch(
-  () => form.uniprotId,
-  (newUniprotId, oldUniprotId) => {
-    const reviewedUid = RecommendedOptions.value
-      .filter((option) => option.symbol === form.geneName)
-      .map((item) => item.uid)
-    if (
-      isFetchUniprotIdsActivated.value &&
-      newUniprotId !== oldUniprotId &&
-      form.uniprotId !== reviewedUid[0]
-    ) {
-      ElNotification({
-        title: 'Warning',
-        message:
-          'Uniprot ID has been changed after fetching recommendations. Please ensure this is intentional.',
-        type: 'warning',
-        offset: 100
-      })
-      isFetchUniprotIdsActivated.value = false
-      warningSubmit.value = true
-    }
-  }
-)
-//是否在MySQL中，else left email to inform, emailJS
-const sendRequest = (email, form) => {
-  const templateParams = {
-    from_name: 'FormGN',
-    user_email: email,
-    user_name: 'Not name required',
-    messages: form
-  }
-  emailjs.init({
-    publicKey: '1jduY049tSgeBvC_8'
+  import { fetchSymbolOptions, fupdateCancerOptions, fetchRecommendedGNsUid } from '@/services/api'
+  import type { FormInstance } from 'element-plus'
+  import FormLoading from '@/components/icons/FormLoading.vue'
+  import datasetinfo from '@/assets/datasetInfo.json'
+  import emailjs from '@emailjs/browser'
+  const router = useRouter()
+  const formRef = ref<FormInstance>()
+  const loading = ref(false)
+  const loadingStep2 = ref(false)
+  const loading_button = ref(false)
+  const isFetchUniprotIdsActivated = ref(false)
+  const warningSubmit = ref(false)
+  const form = reactive({
+    geneName: '',
+    uniprotId: '',
+    cancer: '',
   })
-  emailjs.send('service_jdp892o', 'template_sk8ay3t', templateParams).then(
-    (response) => {
-      ElMessageBox.alert(
-        'Sent successfully! Please wait for the results in your inbox.',
-        'Success',
-        {
-          confirmButtonText: 'OK',
-          type: 'success'
+
+  const rules = {
+    geneName: [{ required: true, message: 'Gene Name is required', trigger: 'blur' }],
+    uniprotId: [{ required: true, message: 'Uniprot ID is required', trigger: 'blur' }],
+    cancer: [{ required: true, message: 'Cancer is required', trigger: 'blur' }],
+  }
+
+  const RecommendedOptions = ref<Array<{ gene_name: string; uid: string }>>([])
+  const RecommendedGNs = ref<string[]>([])
+  const RecommendedGNuid = ref<Array<{ uid: string; label: string }>>([])
+  const CancerList = ref<Array<{ abbre: string; disease: string; tableName: string }>>([])
+
+  const cancerMap = new Map()
+  const processCancerData = (responseData) => {
+    datasetinfo
+      .filter((item) => responseData.includes(item.tableName))
+      .forEach((item) => {
+        const key = `${item.abbre} (${item.disease})`
+        if (!cancerMap.has(key)) {
+          cancerMap.set(key, {
+            abbre: item.abbre,
+            disease: item.disease,
+            tableName: item.tableName,
+          })
+        } else {
+          const existingItem = cancerMap.get(key)
+          existingItem.tableName += `,${item.tableName}`
         }
-      )
-    },
-    (error) => {
-      console.log('FAILED...', error)
-      ElMessage.error('Please fill in the required fields')
-      return false
+      })
+    return Array.from(cancerMap.values())
+  }
+  const cancerListCache = new Map()
+  const fetchCancerList = async () => {
+    loading.value = true
+    try {
+      let responseData
+      if (form.geneName) {
+        if (cancerListCache.has(form.geneName)) {
+          responseData = cancerListCache.get(form.geneName)
+        } else {
+          responseData = await fupdateCancerOptions(form.geneName, 'Target')
+          cancerListCache.set(form.geneName, responseData)
+        }
+      }
+      CancerList.value = processCancerData(responseData)
+      console.log('Cancer List:', CancerList.value)
+    } catch (error) {
+      console.error('Error fetching CancerList:', error)
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const fetchGeneNames = async (searchTerm) => {
+    loading.value = true
+    try {
+      RecommendedOptions.value = await fetchSymbolOptions(searchTerm, 'Target')
+      RecommendedGNs.value = [
+        ...new Set(RecommendedOptions.value.map((option) => option.gene_name)),
+      ]
+    } catch (error) {
+      console.error('Error fetching gene names:', error)
+    } finally {
+      loading.value = false
+    }
+  }
+
+  // 监听 form.geneName 的变化
+  watch(
+    () => form.geneName,
+    async (newGeneName) => {
+      form.cancer = ''
+      if (newGeneName) {
+        const newGeneNameuid = RecommendedOptions.value
+          .filter((option) => option.gene_name === newGeneName)
+          .map((item) => item.uid)
+        form.uniprotId = newGeneNameuid[0] || ''
+      } else {
+        RecommendedGNuid.value = []
+        form.uniprotId = ''
+      }
     }
   )
-}
-// 新增 autofill 函数
-const autofill = async () => {
-  form.geneName = 'STAT1'
-  form.uniprotId = 'P42224'
-  // 等待获取 cancer 数据
-  const responseData = [
-    'lscc_pmid34358469',
-    'lscc_tcga',
-    'luad_pmid32649874',
-    'luad_pmid32649877',
-    'luad_tcga'
-  ]
 
-  // 处理 cancer 数据
-  CancerList.value = processCancerData(responseData)
-  form.cancer = responseData.join(',')
-
-  console.log('form', form)
-}
-
-const onSubmit = () => {
-  if (!formRef.value) return
-  formRef.value.validate(async (valid) => {
-    if (valid) {
-      try {
-        const formData = {
-          ...form,
-          cancer: Array.from(
-            new Set((Array.isArray(form.cancer) ? form.cancer : [form.cancer]).join(',').split(','))
-          ).join(',')
-        }
-
-        loading_button.value = false
-        const reviewedUid = RecommendedOptions.value
-          .filter((option) => option.symbol === form.geneName)
-          .map((item) => item.uid)
-
-        if (warningSubmit.value && form.uniprotId !== reviewedUid[0]) {
-          ElMessageBox.prompt(
-            'The selected Uniprot ID has not been calculated yet. ' +
-              'Processing may take several hours. We highly recommend selecting the Reviewed ID, ' +
-              'which is more reliable. If you still wish to proceed with this Uniprot ID, please ' +
-              'provide your email below so we can notify you of the results. Note that ' +
-              'prediction may fail for some large PDBs.',
-            'NOTICE',
-            {
-              confirmButtonText: 'OK',
-              cancelButtonText: 'Cancel',
-              inputPattern:
-                /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
-              inputErrorMessage: 'Invalid Email',
-              distinguishCancelAndClose: true
-            }
-          )
-            .then(({ value }) => {
-              ElMessage({
-                type: 'success',
-                message: `Your email is: ${value}`
-              })
-              sendRequest(value, JSON.stringify(form))
-              // Clear form content
-              form.geneName = ''
-              form.uniprotId = ''
-              form.cancer = ''
-            })
-            .catch(() => {
-              ElMessage({
-                type: 'info',
-                message: 'Input canceled'
-              })
-            })
+  const fetchUniprotIds = async () => {
+    loading.value = true
+    isFetchUniprotIdsActivated.value = true
+    try {
+      // IF NOT NONE
+      const responseData = await fetchRecommendedGNsUid(form.geneName)
+      responseData.forEach((item) => {
+        if (item.entry_type === 'reviewed') {
+          item.label = `${item.uid}(reviewed)`
         } else {
-          router.push({
-            path: '/result',
-            query: {
-              geneName: formData.geneName,
-              uniprotId: formData.uniprotId,
-              cancer: formData.cancer
-            }
-          })
+          item.label = item.uid
         }
-      } catch (error) {
-        console.error('Error submitting form:', error)
-      }
-    } else {
-      console.log('error submit!')
+      })
+      RecommendedGNuid.value = responseData
+    } catch (error) {
+      console.error('Error fetching uniprot ids:', error)
+    } finally {
+      loading.value = false
     }
-  })
-}
+  }
+  watch(
+    () => form.uniprotId,
+    (newUniprotId, oldUniprotId) => {
+      const reviewedUid = RecommendedOptions.value
+        .filter((option) => option.gene_name === form.geneName)
+        .map((item) => item.uid)
+      if (
+        isFetchUniprotIdsActivated.value &&
+        newUniprotId !== oldUniprotId &&
+        form.uniprotId !== reviewedUid[0]
+      ) {
+        ElNotification({
+          title: 'Warning',
+          message:
+            'Uniprot ID has been changed after fetching recommendations. Please ensure this is intentional.',
+          type: 'warning',
+          offset: 100,
+        })
+        isFetchUniprotIdsActivated.value = false
+        warningSubmit.value = true
+      }
+    }
+  )
+  //是否在MySQL中，else left email to inform, emailJS
+  const sendRequest = (email, form) => {
+    const templateParams = {
+      from_name: 'FormGN',
+      user_email: email,
+      user_name: 'Not name required',
+      messages: form,
+    }
+    emailjs.init({
+      publicKey: '1jduY049tSgeBvC_8',
+    })
+    emailjs.send('service_jdp892o', 'template_sk8ay3t', templateParams).then(
+      (response) => {
+        ElMessageBox.alert(
+          'Sent successfully! Please wait for the results in your inbox.',
+          'Success',
+          {
+            confirmButtonText: 'OK',
+            type: 'success',
+          }
+        )
+      },
+      (error) => {
+        console.log('FAILED...', error)
+        ElMessage.error('Please fill in the required fields')
+        return false
+      }
+    )
+  }
+
+  const onSubmit = () => {
+    if (!formRef.value) return
+    formRef.value.validate(async (valid) => {
+      if (valid) {
+        try {
+          const formData = {
+            ...form,
+            cancer: Array.from(
+              new Set(
+                (Array.isArray(form.cancer) ? form.cancer : [form.cancer]).join(',').split(',')
+              )
+            ).join(','),
+          }
+
+          loading_button.value = false
+          const reviewedUid = RecommendedOptions.value
+            .filter((option) => option.gene_name === form.geneName)
+            .map((item) => item.uid)
+
+          if (warningSubmit.value && form.uniprotId !== reviewedUid[0]) {
+            ElMessageBox.prompt(
+              'The selected Uniprot ID has not been calculated yet. ' +
+                'Processing may take several hours. We highly recommend selecting the Reviewed ID, ' +
+                'which is more reliable. If you still wish to proceed with this Uniprot ID, please ' +
+                'provide your email below so we can notify you of the results. Note that ' +
+                'prediction may fail for some large PDBs.',
+              'NOTICE',
+              {
+                confirmButtonText: 'OK',
+                cancelButtonText: 'Cancel',
+                inputPattern:
+                  /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
+                inputErrorMessage: 'Invalid Email',
+                distinguishCancelAndClose: true,
+              }
+            )
+              .then(({ value }) => {
+                ElMessage({
+                  type: 'success',
+                  message: `Your email is: ${value}`,
+                })
+                sendRequest(value, JSON.stringify(form))
+                // Clear form content
+                form.geneName = ''
+                form.uniprotId = ''
+                form.cancer = ''
+              })
+              .catch(() => {
+                ElMessage({
+                  type: 'info',
+                  message: 'Input canceled',
+                })
+              })
+          } else {
+            router.push({
+              path: '/result',
+              query: {
+                geneName: formData.geneName,
+                uniprotId: formData.uniprotId,
+                cancer: formData.cancer,
+              },
+            })
+          }
+        } catch (error) {
+          console.error('Error submitting form:', error)
+        }
+      } else {
+        console.log('error submit!')
+      }
+    })
+  }
 </script>
 
 <template>
@@ -393,22 +379,22 @@ const onSubmit = () => {
 </template>
 
 <style lang="scss">
-.demo-form-inline .el-input {
-  --el-input-width: 220px;
-}
+  .demo-form-inline .el-input {
+    --el-input-width: 220px;
+  }
 
-.demo-form-inline .el-select {
-  --el-select-width: 220px;
-}
+  .demo-form-inline .el-select {
+    --el-select-width: 220px;
+  }
 
-.demo-form-inline .el-form-item__label {
-  font-size: 15px;
-  // font-weight: bold;
-  color: rgb(94, 73, 95);
-}
+  .demo-form-inline .el-form-item__label {
+    font-size: 15px;
+    // font-weight: bold;
+    color: rgb(94, 73, 95);
+  }
 
-.el-button {
-  margin-right: 40px;
-  width: 220px; /* Increase the width */
-}
+  .el-button {
+    margin-right: 40px;
+    width: 220px; /* Increase the width */
+  }
 </style>

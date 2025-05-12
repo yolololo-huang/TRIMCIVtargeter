@@ -79,17 +79,17 @@
 </template>
 
 <style scoped>
-.privacy-card {
-  --el-box-shadow-dark: 0 0px 20px rgba(143, 118, 255, 0.459);
-  padding: 20px;
-  border-radius: 4px;
-  margin-bottom: 20px;
-  margin-top: 20px;
-  box-shadow: var(--el-box-shadow-dark);
-  text-align: left;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-}
+  .privacy-card {
+    --el-box-shadow-dark: 0 0px 20px rgba(143, 118, 255, 0.459);
+    padding: 20px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    box-shadow: var(--el-box-shadow-dark);
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+  }
 </style>

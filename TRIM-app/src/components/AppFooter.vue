@@ -44,38 +44,38 @@
 </template>
 
 <script>
-export default {
-  name: 'AppFooter'
-}
+  export default {
+    name: 'AppFooter',
+  }
 </script>
 
 <style lang="scss" scoped>
-.row {
-  display: flex;
-  justify-content: flex-start;
-  // 设置与footer的间距
-  .col {
-    text-align: left;
-    small {
-      display: block;
-      line-height: 2;
-      margin-bottom: 0rem;
-      .highlight {
-        color: #8c07dd;
-        &.small {
-          font-size: 75%;
-        }
-        &.blue {
-          color: #1e90ff;
+  .row {
+    display: flex;
+    justify-content: flex-start;
+    // 设置与footer的间距
+    .col {
+      text-align: left;
+      small {
+        display: block;
+        line-height: 2;
+        margin-bottom: 0rem;
+        .highlight {
+          color: #8c07dd;
+          &.small {
+            font-size: 75%;
+          }
+          &.blue {
+            color: #1e90ff;
+          }
         }
       }
     }
   }
-}
 
-footer {
-  margin-top: 0rem;
-  text-align: right;
-  line-height: 2;
-}
+  footer {
+    margin-top: 0rem;
+    text-align: right;
+    line-height: 2;
+  }
 </style>

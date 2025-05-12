@@ -28,7 +28,7 @@ async function _vl(vegaVersion, vlVersion, apiVersion, tooltipVersion, require) 
       `vega@${vegaVersion}`,
       `vega-lite@${vlVersion}`,
       `vega-lite-api@${apiVersion}`,
-      `vega-tooltip@${tooltipVersion}`
+      `vega-tooltip@${tooltipVersion}`,
     ].map((module) => require(module))
   )
 
@@ -37,8 +37,8 @@ async function _vl(vegaVersion, vlVersion, apiVersion, tooltipVersion, require) 
       // vega-lite default configuration
       config: {
         view: { continuousWidth: 400, continuousHeight: 300 },
-        mark: { tooltip: null }
-      }
+        mark: { tooltip: null },
+      },
     },
     init: (view) => {
       // initialize tooltip handler
@@ -49,8 +49,8 @@ async function _vl(vegaVersion, vlVersion, apiVersion, tooltipVersion, require) 
     view: {
       // view constructor options
       loader: vega.loader({ baseURL: 'https://cdn.jsdelivr.net/npm/vega-datasets@2/' }),
-      renderer: 'canvas'
-    }
+      renderer: 'canvas',
+    },
   }
 
   return api.register(vega, vegalite, options)
@@ -126,7 +126,7 @@ function _13(vl, width) {
 
   const scale = {
     domain: ['sun', 'fog', 'drizzle', 'rain', 'snow'],
-    range: ['#e7ba52', '#a7a7a7', '#aec7e8', '#1f77b4', '#9467bd']
+    range: ['#e7ba52', '#a7a7a7', '#aec7e8', '#1f77b4', '#9467bd'],
   }
 
   const plot1 = vl
@@ -308,7 +308,7 @@ function _23(vl, width) {
 
   const scale = {
     type: 'point',
-    padding: 0
+    padding: 0,
   }
 
   const axis = {
@@ -319,13 +319,13 @@ function _23(vl, width) {
     gridColor: '#888',
     labelAngle: 0,
     labelPadding: 8,
-    labelFontWeight: 'bold'
+    labelFontWeight: 'bold',
   }
 
   const lines = vl
     .markLine({
       strokeWidth: 1.5,
-      opacity: 0.5
+      opacity: 0.5,
     })
     .encode(
       vl.color().fieldN('Species').sort('descending'),
@@ -338,7 +338,7 @@ function _23(vl, width) {
     .markText({
       dx: -2,
       align: 'right',
-      baseline: 'middle'
+      baseline: 'middle',
     })
     .transform(
       vl.groupby('key').aggregate(vl.min('value').as('min'), vl.max('value').as('max')),

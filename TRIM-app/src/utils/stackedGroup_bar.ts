@@ -7,7 +7,7 @@ import {
   stack,
   max,
   group,
-  transition
+  transition,
 } from 'd3'
 
 interface Dataset {

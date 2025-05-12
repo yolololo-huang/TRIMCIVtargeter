@@ -8,7 +8,7 @@ export const RadarR = (points, options = {}) => {
     strokeColor: 'black',
     fillOpacity: 0.03,
     strokeOpacity: 0.3,
-    labelFontSize: 8
+    labelFontSize: 8,
   }
 
   const config = { ...defaultOptions, ...options }
@@ -35,7 +35,7 @@ export const RadarR = (points, options = {}) => {
     projection: {
       type: 'azimuthal-equidistant',
       rotate: [0, -90],
-      domain: d3.geoCircle().center([0, 90]).radius(1.1)()
+      domain: d3.geoCircle().center([0, 90]).radius(1.1)(),
     },
     color: { legend: true },
     marks: [
@@ -46,7 +46,7 @@ export const RadarR = (points, options = {}) => {
         fill: config.strokeColor,
         strokeOpacity: config.strokeOpacity,
         fillOpacity: config.fillOpacity,
-        strokeWidth: 0.5
+        strokeWidth: 0.5,
       }),
 
       // 轴线
@@ -57,7 +57,7 @@ export const RadarR = (points, options = {}) => {
         y2: 90,
         stroke: 'white',
         strokeOpacity: 0.5,
-        strokeWidth: 2.5
+        strokeWidth: 2.5,
       }),
 
       // 刻度标签
@@ -69,7 +69,7 @@ export const RadarR = (points, options = {}) => {
         text: (d) => `${'+/-' + d}`,
         fill: 'currentColor',
         stroke: 'white',
-        fontSize: config.labelFontSize
+        fontSize: config.labelFontSize,
       }),
 
       // axes labels
@@ -79,7 +79,7 @@ export const RadarR = (points, options = {}) => {
         dx: (d) => (longitude(d) > 0 ? 10 : -10),
         dy: -10,
         text: Plot.identity,
-        lineWidth: 5
+        lineWidth: 5,
       }),
 
       // 数据区域
@@ -93,7 +93,7 @@ export const RadarR = (points, options = {}) => {
           stroke: 'name',
           strokeOpacity: 1,
           curve: 'cardinal-closed',
-          fillOpacity: 0.1
+          fillOpacity: 0.1,
         })
       ),
 
@@ -103,7 +103,7 @@ export const RadarR = (points, options = {}) => {
         y: ({ value }) => 90 - Math.abs(value),
         fill: 'name',
         stroke: 'white',
-        r: 4
+        r: 4,
       }),
 
       // 交互标签
@@ -117,13 +117,13 @@ export const RadarR = (points, options = {}) => {
           dx: 4,
           fill: 'currentColor',
           stroke: 'white',
-          maxRadius: 10
+          maxRadius: 10,
         })
-      )
+      ),
     ],
     style: {
-      backgroundColor: config.backgroundColor
-    }
+      backgroundColor: config.backgroundColor,
+    },
   })
 
   // 添加交互效果（与之前一致）

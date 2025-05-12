@@ -1,25 +1,25 @@
 <script setup lang="ts">
-import { gsap } from 'gsap'
-import { onMounted } from 'vue'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { TextPlugin } from 'gsap/TextPlugin'
+  import { gsap } from 'gsap'
+  import { onMounted } from 'vue'
+  import { ScrollTrigger } from 'gsap/ScrollTrigger'
+  import { TextPlugin } from 'gsap/TextPlugin'
 
-gsap.registerPlugin(ScrollTrigger, TextPlugin)
+  gsap.registerPlugin(ScrollTrigger, TextPlugin)
 
-onMounted(() => {
-  gsap.to('.animated-h2-purple', {
-    scrollTrigger: {
-      trigger: '.animated-h3',
-      start: 'top 50%',
-      end: 'bottom 20%',
-      toggleActions: 'play none none none'
-    },
-    duration: 2,
-    text: 'Submit your result',
-    color: '#8c07dd',
-    ease: 'none'
+  onMounted(() => {
+    gsap.to('.animated-h2-purple', {
+      scrollTrigger: {
+        trigger: '.animated-h3',
+        start: 'top 50%',
+        end: 'bottom 20%',
+        toggleActions: 'play none none none',
+      },
+      duration: 2,
+      text: 'Submit your result',
+      color: '#8c07dd',
+      ease: 'none',
+    })
   })
-})
 </script>
 
 <template>
@@ -109,49 +109,49 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
-.header-divider-container {
-  background-color: rgb(206, 206, 250);
-  display: flex;
-  justify-content: center;
-}
+  .header-divider-container {
+    background-color: rgb(206, 206, 250);
+    display: flex;
+    justify-content: center;
+  }
 
-.header-divider {
-  width: 980px;
-  border: 1px solid white;
-  margin: 0; /* 可根据需要调整间距 */
-}
-.intro {
-  color: rgb(94, 73, 95);
-  margin-left: 10px;
-  margin-top: 0px;
-  font-size: 1.2rem;
-  line-height: 1.5rem;
-  margin-bottom: 1rem;
-}
+  .header-divider {
+    width: 980px;
+    border: 1px solid white;
+    margin: 0; /* 可根据需要调整间距 */
+  }
+  .intro {
+    color: rgb(94, 73, 95);
+    margin-left: 10px;
+    margin-top: 0px;
+    font-size: 1.2rem;
+    line-height: 1.5rem;
+    margin-bottom: 1rem;
+  }
 
-.form-container {
-  padding: 20px;
-  background-color: rgb(206, 206, 250);
-}
+  .form-container {
+    padding: 20px;
+    background-color: rgb(206, 206, 250);
+  }
 
-.form-container-row {
-  max-width: 1024px;
-  margin: 0 auto;
-  margin-bottom: 20px;
-  align-items: center;
-  justify-content: center;
-}
+  .form-container-row {
+    max-width: 1024px;
+    margin: 0 auto;
+    margin-bottom: 20px;
+    align-items: center;
+    justify-content: center;
+  }
 
-.gosubmit-box {
-  --el-box-shadow-dark: 0 0px 20px rgba(143, 118, 255, 0.459);
-  padding: 20px;
-  border-radius: 4px;
-  margin-bottom: 20px;
-  margin-top: 20px;
-  box-shadow: var(--el-box-shadow-dark);
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center; //vertical center也对齐
-}
+  .gosubmit-box {
+    --el-box-shadow-dark: 0 0px 20px rgba(143, 118, 255, 0.459);
+    padding: 20px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    box-shadow: var(--el-box-shadow-dark);
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center; //vertical center也对齐
+  }
 </style>

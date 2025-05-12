@@ -16,7 +16,7 @@ function _pills(html) {
     'd3-group',
     'Vega-lite',
     'vl.selectInterval',
-    'vl.selectSingle'
+    'vl.selectSingle',
   ]
   return html`
     <div class="pill-box">
@@ -72,7 +72,7 @@ function _dashboard(vl, data_viz, d3, data) {
 
   const scale = {
     domain: Array.from(new Set(data_viz.heatmap.map((d) => d.v))),
-    range: d3.schemeSet3.concat(d3.schemeSet2).concat(['#ddd'])
+    range: d3.schemeSet3.concat(d3.schemeSet2).concat(['#ddd']),
   }
 
   const heatmap = vl
@@ -91,7 +91,7 @@ function _dashboard(vl, data_viz, d3, data) {
               title: null,
               values: d3.range(0, data.total_len, 20),
               labelAngle: 0,
-              orient: 'top'
+              orient: 'top',
             }),
           vl.color().fieldN('v').scale(scale).legend(null)
         ),
@@ -103,7 +103,7 @@ function _dashboard(vl, data_viz, d3, data) {
           { field: 'n', title: 'Protein' },
           { field: 'k', title: 'Position' },
           { field: 'v', title: 'Sequence' },
-          { field: 'mode', title: 'Mode' }
+          { field: 'mode', title: 'Mode' },
         ])
       )
     )
@@ -136,7 +136,7 @@ function _dashboard(vl, data_viz, d3, data) {
       vl.color().fieldQ('Conversion Rate').scale({ scheme: 'yellowgreenblue' }).legend(null),
       vl.tooltip([
         { field: 'Conversion Rate', format: '.2f' },
-        { field: 'k', title: 'Position' }
+        { field: 'k', title: 'Position' },
       ])
     )
     .height(150)
@@ -157,7 +157,7 @@ async function _data(file, a, d3) {
   ).map((d) => ({
     ...d,
     seq_len: d.seq.length,
-    seq_name: d.header //.split('|')[2].split(' ')[0]
+    seq_name: d.header, //.split('|')[2].split(' ')[0]
   }))
 
   const max_len = d3.max(raw, (d) => d.seq_len)
@@ -168,8 +168,8 @@ async function _data(file, a, d3) {
     seq_full: [...(d.seq + '-'.repeat(max_len - d.seq_len))].map((n, i) => ({
       k: i,
       v: n,
-      n: d.seq_name
-    }))
+      n: d.seq_name,
+    })),
   }))
 
   const derive = raw1.map((k) => k.seq_full.map((j) => ({ n: j.n, k: j.k, v: j.v }))).flat()
@@ -195,7 +195,7 @@ function _data_viz(data, d3) {
 
   const derive2 = data.derive.map((d) => ({
     ...d,
-    mode: conversion.filter((j) => j.k === d.k)[0].v
+    mode: conversion.filter((j) => j.k === d.k)[0].v,
   }))
 
   const data_viz = derive2.concat(

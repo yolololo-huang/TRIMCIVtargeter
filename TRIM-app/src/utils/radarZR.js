@@ -9,7 +9,7 @@ export const RadarZR = (points, options = {}) => {
     strokeColor: 'black',
     fillOpacity: 0.03,
     strokeOpacity: 0.3,
-    labelFontSize: 8
+    labelFontSize: 8,
   }
 
   const config = { ...defaultOptions, ...options }
@@ -23,7 +23,7 @@ export const RadarZR = (points, options = {}) => {
   const maxAbsValue = Math.max(...uniquePoints.map((d) => Math.abs(d.value))) + 10
   const normalizedPoints = uniquePoints.map((d) => ({
     ...d,
-    normalizedValue: Math.abs(d.value) / maxAbsValue
+    normalizedValue: Math.abs(d.value) / maxAbsValue,
   }))
   const longitude = d3
     .scalePoint(new Set(Plot.valueof(uniquePoints, 'key')), [180, -180])
@@ -45,7 +45,7 @@ export const RadarZR = (points, options = {}) => {
     projection: {
       type: 'azimuthal-equidistant',
       rotate: [0, -90],
-      domain: d3.geoCircle().center([0, 90]).radius(1.1)()
+      domain: d3.geoCircle().center([0, 90]).radius(1.1)(),
     },
     color: { legend: true },
     marks: [
@@ -56,7 +56,7 @@ export const RadarZR = (points, options = {}) => {
         fill: config.strokeColor,
         strokeOpacity: config.strokeOpacity,
         fillOpacity: config.fillOpacity,
-        strokeWidth: 0.5
+        strokeWidth: 0.5,
       }),
 
       // 轴线
@@ -67,7 +67,7 @@ export const RadarZR = (points, options = {}) => {
         y2: 90,
         stroke: 'white',
         strokeOpacity: 0.5,
-        strokeWidth: 2.5
+        strokeWidth: 2.5,
       }),
 
       // 刻度标签
@@ -81,7 +81,7 @@ export const RadarZR = (points, options = {}) => {
           fill: 'currentColor',
           stroke: 'white',
           fontSize: config.labelFontSize,
-          dy: -4
+          dy: -4,
         }
       ),
       // axes labels
@@ -89,7 +89,7 @@ export const RadarZR = (points, options = {}) => {
         x: longitude,
         y: 90 - 1,
         text: Plot.identity,
-        lineWidth: 5
+        lineWidth: 5,
       }),
       // 数据区域
       Plot.area(normalizedPoints, {
@@ -101,7 +101,7 @@ export const RadarZR = (points, options = {}) => {
         stroke: 'name',
         strokeOpacity: 1,
         curve: 'cardinal-closed',
-        fillOpacity: 0.1 // 初始透明度
+        fillOpacity: 0.1, // 初始透明度
         // title: (d) => `${d.name}\n${d.key}: ${(100 * d.value).toFixed(0)}%` // 添加悬停提示
       }),
 
@@ -111,7 +111,7 @@ export const RadarZR = (points, options = {}) => {
         y: ({ normalizedValue }) => 90 - normalizedValue,
         fill: 'name',
         stroke: 'white',
-        r: 4
+        r: 4,
         // title: (d) => `${d.name}\n${d.key}: ${(100 * d.value).toFixed(0)}%` // 添加悬停提示
       }),
 
@@ -126,13 +126,13 @@ export const RadarZR = (points, options = {}) => {
           dx: 4,
           fill: 'currentColor',
           stroke: 'white',
-          maxRadius: 10
+          maxRadius: 10,
         })
-      )
+      ),
     ],
     style: {
-      backgroundColor: config.backgroundColor
-    }
+      backgroundColor: config.backgroundColor,
+    },
   })
 
   // 添加交互效果

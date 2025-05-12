@@ -346,17 +346,17 @@ export default function define(runtime, observer) {
       {
         url: new URL('@/assets/TRIMs_clustaW_trimai.fasta.treefile', import.meta.url).href,
         mimeType: 'text/plain',
-        toString
-      }
+        toString,
+      },
     ],
     [
       'TRIMs_infoTab.json',
       {
         url: new URL('@/assets/TRIMs_infoTab.json', import.meta.url).href,
         mimeType: 'application/json',
-        toString
-      }
-    ]
+        toString,
+      },
+    ],
   ])
 
   main.builtin(
@@ -386,7 +386,7 @@ export default function define(runtime, observer) {
         'linkConstant',
         'linkExtensionVariable',
         'linkVariable',
-        'groupMap'
+        'groupMap',
       ],
       _chart
     )

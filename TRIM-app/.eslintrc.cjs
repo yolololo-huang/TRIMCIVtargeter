@@ -3,6 +3,11 @@ require('@rushstack/eslint-patch/modern-module-resolution')
 
 module.exports = {
   root: true,
+  env: {
+    browser: true,
+    es2021: true,
+    node: true
+  },
   extends: [
     'plugin:vue/vue3-essential',
     'eslint:recommended',
@@ -10,17 +15,21 @@ module.exports = {
     '@vue/eslint-config-prettier'
   ],
   parserOptions: {
-    ecmaVersion: 'latest'
+    ecmaVersion: 'latest',
+    parser: '@typescript-eslint/parser',
+    sourceType: 'module'
   },
   rules: {
-    'prettier/prettier': [
-      'error',
-      {
-        semi: false, // 分号
-        wrapAttributes: false, // 标签属性换行
-        printWidth: 100, // 换行长度
-        endOfLine: 'auto' // 换行符，windows(回车）和mac（回车+换行）兼容
+    'vue/multi-word-component-names': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
+    'prettier/prettier': 'error'
+  },
+  overrides: [
+    {
+      files: ['*.mjs'],
+      parserOptions: {
+        sourceType: 'module'
       }
-    ]
-  }
+    }
+  ]
 }

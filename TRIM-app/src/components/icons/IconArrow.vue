@@ -1,21 +1,21 @@
 <script setup lang="ts">
-import { gsap } from 'gsap'
-import { onMounted } from 'vue'
+  import { gsap } from 'gsap'
+  import { onMounted } from 'vue'
 
-onMounted(() => {
-  gsap.fromTo(
-    '.scroll-down svg',
-    { opacity: 0, y: 30 },
-    {
-      duration: 1,
-      opacity: 1,
-      y: 10,
-      ease: 'power1.inOut',
-      repeat: -1,
-      yoyo: true
-    }
-  )
-})
+  onMounted(() => {
+    gsap.fromTo(
+      '.scroll-down svg',
+      { opacity: 0, y: 30 },
+      {
+        duration: 1,
+        opacity: 1,
+        y: 10,
+        ease: 'power1.inOut',
+        repeat: -1,
+        yoyo: true,
+      }
+    )
+  })
 </script>
 
 <template>
@@ -42,30 +42,30 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.scroll-down {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 50px;
-}
+  .scroll-down {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+  }
 
-.scroll-down svg {
-  animation: bounce 2s infinite;
-}
+  .scroll-down svg {
+    animation: bounce 2s infinite;
+  }
 
-@keyframes bounce {
-  0%,
-  20%,
-  50%,
-  80%,
-  100% {
-    transform: translateY(15);
+  @keyframes bounce {
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+      transform: translateY(15);
+    }
+    40% {
+      transform: translateY(30px);
+    }
+    60% {
+      transform: translateY(25px);
+    }
   }
-  40% {
-    transform: translateY(30px);
-  }
-  60% {
-    transform: translateY(25px);
-  }
-}
 </style>

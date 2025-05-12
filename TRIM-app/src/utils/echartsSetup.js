@@ -10,10 +10,10 @@ export function setupHeatmap(chartElement, data, TRIMorder) {
       TRIMorder.indexOf(item.TRIMname1),
       TRIMorder.indexOf(item.TRIMname2),
       parseFloat(item.rmsd),
-      parseFloat(item.tmscore)
+      parseFloat(item.tmscore),
     ],
     group1: item.group1,
-    group2: item.group2
+    group2: item.group2,
   }))
 
   const option = {
@@ -27,40 +27,40 @@ export function setupHeatmap(chartElement, data, TRIMorder) {
         const group1 = params.data.group1
         const group2 = params.data.group2
         return `X: ${xLabel} (Group: ${group1})<br>Y: ${yLabel} (Group: ${group2})<br>TMscore: ${value}<br>rmsd:${rmsd}`
-      }
+      },
     },
     grid: {
       height: 'auto',
       top: '10%',
-      left: '6%'
+      left: '6%',
     },
     xAxis: {
       type: 'category',
       data: TRIMorder,
       splitArea: {
-        show: true
+        show: true,
       },
       axisLabel: {
         interval: 0,
         rotate: 45,
-        fontSize: 7
+        fontSize: 7,
       },
       axisLine: {
         lineStyle: {
-          width: 1
-        }
-      }
+          width: 1,
+        },
+      },
     },
     yAxis: {
       type: 'category',
       data: TRIMorder,
       splitArea: {
-        show: true
+        show: true,
       },
       axisLabel: {
         interval: 0,
-        fontSize: 7
-      }
+        fontSize: 7,
+      },
     },
     dataZoom: [
       {
@@ -71,7 +71,7 @@ export function setupHeatmap(chartElement, data, TRIMorder) {
         borderRadius: [11, 11, 11, 11],
         handleSize: '200%',
         height: 10,
-        bottom: '3%'
+        bottom: '3%',
       },
       {
         type: 'slider',
@@ -81,21 +81,21 @@ export function setupHeatmap(chartElement, data, TRIMorder) {
         moveHandleSize: 3,
         borderRadius: [11, 11, 11, 11],
         handleSize: '200%',
-        width: 10
+        width: 10,
       },
       {
         type: 'inside',
-        xAxisIndex: [0]
+        xAxisIndex: [0],
       },
       {
         type: 'inside',
-        yAxisIndex: [0]
-      }
+        yAxisIndex: [0],
+      },
     ],
     visualMap: {
       // handleSize: '125%',
       handleStyle: {
-        borderColor: '#8c07dd'
+        borderColor: '#8c07dd',
       },
       type: 'continuous',
       precision: 2,
@@ -109,9 +109,9 @@ export function setupHeatmap(chartElement, data, TRIMorder) {
       left: 'right',
       top: '1%',
       inRange: {
-        color: ['white', '#bbd0ff', '#8c07dd']
+        color: ['white', '#bbd0ff', '#8c07dd'],
       },
-      inactiveColor: 'red'
+      inactiveColor: 'red',
       // padding: [0, 0, 0, 0]
     },
     series: [
@@ -122,11 +122,11 @@ export function setupHeatmap(chartElement, data, TRIMorder) {
         emphasis: {
           itemStyle: {
             shadowBlur: 5,
-            shadowColor: 'rgba(0, 0, 0, 2)'
-          }
-        }
-      }
-    ]
+            shadowColor: 'rgba(0, 0, 0, 2)',
+          },
+        },
+      },
+    ],
   }
 
   myChart.setOption(option)
@@ -140,14 +140,14 @@ export function setupHeatmap(chartElement, data, TRIMorder) {
     myChart.setOption({
       xAxis: {
         axisLabel: {
-          fontSize: newFontSize
-        }
+          fontSize: newFontSize,
+        },
       },
       yAxis: {
         axisLabel: {
-          fontSize: newFontSize
-        }
-      }
+          fontSize: newFontSize,
+        },
+      },
     })
   })
 }

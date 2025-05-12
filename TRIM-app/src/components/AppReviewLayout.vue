@@ -1,32 +1,32 @@
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue'
+  import { ref, onMounted } from 'vue'
 
-const isLoading = ref(true)
+  const isLoading = ref(true)
 
-const cardData = ref([
-  {
-    imageUrl: './tmp/familyReview.png',
-    title: 'TRIM Family Review',
-    linkpage: '/trim-review',
-    intro: 'TRIM family protein review page'
-  },
-  {
-    imageUrl: './tmp/pancancerCover.png',
-    title: 'Pancancer Landscape',
-    linkpage: '/trim-cancer',
-    intro: 'TRIM DEG corrrelation in Pancancer'
-  },
-  {
-    imageUrl: './tmp/pairsNetwork.png',
-    title: 'TRIM-Targets database',
-    linkpage: '/trim-ref',
-    intro: 'Substrates and interactors of TRIM family from the curated publications.'
-  }
-])
+  const cardData = ref([
+    {
+      imageUrl: './tmp/familyReview.png',
+      title: 'TRIM Family Review',
+      linkpage: '/trim-review',
+      intro: 'TRIM family protein review page',
+    },
+    {
+      imageUrl: './tmp/pancancerCover.png',
+      title: 'Pancancer Landscape',
+      linkpage: '/trim-cancer',
+      intro: 'TRIM DEG corrrelation in Pancancer',
+    },
+    {
+      imageUrl: './tmp/pairsNetwork.png',
+      title: 'TRIM-Targets database',
+      linkpage: '/trim-ref',
+      intro: 'Substrates and interactors of TRIM family from the curated publications.',
+    },
+  ])
 
-onMounted(() => {
-  isLoading.value = false
-})
+  onMounted(() => {
+    isLoading.value = false
+  })
 </script>
 
 <template>
@@ -65,26 +65,26 @@ onMounted(() => {
 </template>
 
 <style>
-.card-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  /* height: 100vh; */
-}
+  .card-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* height: 100vh; */
+  }
 
-.el-image {
-  width: 100%;
-  height: 250px;
-  display: block;
-  margin: 0 auto;
-}
+  .el-image {
+    width: 100%;
+    height: 250px;
+    display: block;
+    margin: 0 auto;
+  }
 
-.el-card:hover {
-  box-shadow: 0 0px 20px rgba(143, 118, 255, 0.459);
-  transition: box-shadow 0.3s ease-in-out;
-}
+  .el-card:hover {
+    box-shadow: 0 0px 20px rgba(143, 118, 255, 0.459);
+    transition: box-shadow 0.3s ease-in-out;
+  }
 
-.clickable-image {
-  cursor: pointer;
-}
+  .clickable-image {
+    cursor: pointer;
+  }
 </style>

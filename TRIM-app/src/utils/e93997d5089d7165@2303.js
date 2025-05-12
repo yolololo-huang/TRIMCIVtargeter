@@ -78,7 +78,7 @@ function _a1(slider) {
     max: 1,
     step: 0.01,
     format: '.0%',
-    description: 'Zero to one, formatted as a percentage'
+    description: 'Zero to one, formatted as a percentage',
   })
 }
 
@@ -88,7 +88,7 @@ function _a1_1(slider) {
     max: 1,
     step: 0.01,
     format: (v) => `${Math.round(100 * v)} per cent`,
-    description: 'Zero to one, formatted with a custom function'
+    description: 'Zero to one, formatted with a custom function',
   })
 }
 
@@ -99,7 +99,7 @@ function _a2(slider) {
     step: 1000,
     value: 3250000,
     format: ',',
-    description: 'Zero to one billion, in steps of one thousand, formatted as a (US) number'
+    description: 'Zero to one billion, in steps of one thousand, formatted as a (US) number',
   })
 }
 
@@ -110,7 +110,7 @@ function _a3(slider) {
     step: 1,
     value: 10,
     title: 'Integers',
-    description: 'Integers from zero through 100'
+    description: 'Integers from zero through 100',
   })
 }
 
@@ -119,7 +119,7 @@ function _a4(slider) {
     min: 0.9,
     max: 1.1,
     precision: 3,
-    description: 'A high precision slider example'
+    description: 'A high precision slider example',
   })
 }
 
@@ -129,7 +129,7 @@ function _a5(slider) {
     max: 1.1,
     precision: 3,
     submit: true,
-    description: 'The same as a4, but only changes value on submit'
+    description: 'The same as a4, but only changes value on submit',
   })
 }
 
@@ -153,7 +153,7 @@ function _slider(input) {
       getValue,
       format,
       display,
-      submit
+      submit,
     } = typeof config === 'number' ? { value: config } : config
     precision = Math.pow(10, precision)
     if (!getValue) getValue = (input) => Math.round(input.valueAsNumber * precision) / precision
@@ -165,7 +165,7 @@ function _slider(input) {
       format,
       display,
       attributes: { min, max, step, disabled, value },
-      getValue
+      getValue,
     })
   }
 }
@@ -194,7 +194,7 @@ function _15(b) {
 function _b1(button) {
   return button({
     value: 'Click me',
-    description: 'We use a reference to the button below to record the time you pressed it.'
+    description: 'We use a reference to the button below to record the time you pressed it.',
   })
 }
 
@@ -209,13 +209,13 @@ function _button(input) {
       value = 'Ok',
       title,
       description,
-      disabled
+      disabled,
     } = typeof config === 'string' ? { value: config } : config
     const form = input({
       type: 'button',
       title,
       description,
-      attributes: { disabled, value }
+      attributes: { disabled, value },
     })
     form.output.remove()
     return form
@@ -247,7 +247,7 @@ function _dd1(select) {
     title: 'Stooges',
     description: 'Please pick your favorite stooge.',
     options: ['Curly', 'Larry', 'Moe', 'Shemp'],
-    value: 'Moe'
+    value: 'Moe',
   })
 }
 
@@ -266,9 +266,9 @@ function _dd2(select) {
       'Kale',
       'Turnips',
       'Green Beans',
-      'Asparagus'
+      'Asparagus',
     ],
-    multiple: true
+    multiple: true,
   })
 }
 
@@ -286,9 +286,9 @@ function _dd3(select) {
       { label: '🤔', value: 'hmmm' },
       { label: '😱', value: 'yikes', disabled: true },
       { label: '😈', value: 'mischievous' },
-      { label: '💩', value: 'poo' }
+      { label: '💩', value: 'poo' },
     ],
-    value: 'hmmm'
+    value: 'hmmm',
   })
   dd3.input.style.fontSize = '30px'
   dd3.input.style.marginTop = '8px'
@@ -309,7 +309,7 @@ function _select(input, html) {
       submit,
       multiple,
       size,
-      options
+      options,
     } = Array.isArray(config) ? { options: config } : config
     options = options.map((o) => (typeof o === 'object' ? o : { value: o, label: o }))
     const form = input({
@@ -334,12 +334,12 @@ function _select(input, html) {
                   ? formValue.includes(value)
                   : formValue === value,
                 disabled: disabled ? disabled : false,
-                textContent: label
+                textContent: label,
               })
             )}
           </select>
         </form>
-      `
+      `,
     })
     form.output.remove()
     return form
@@ -363,7 +363,7 @@ import { autoSelect } from '@jashkenas/inputs'
 function _as(autoSelect, usa) {
   return autoSelect({
     options: usa.objects.states.geometries.map((d) => d.properties.name),
-    placeholder: 'Search for a US state . . .'
+    placeholder: 'Search for a US state . . .',
   })
 }
 
@@ -382,7 +382,7 @@ function _autoSelect(input, html) {
       placeholder,
       size,
       options,
-      list = 'options'
+      list = 'options',
     } = Array.isArray(config) ? { options: config } : config
 
     const optionsSet = new Set(options)
@@ -414,12 +414,12 @@ function _autoSelect(input, html) {
           <datalist id="${list}">
             ${options.map((d) =>
               Object.assign(html`<option></option>`, {
-                value: d
+                value: d,
               })
             )}
           </datalist>
         </form>
-      `
+      `,
     })
 
     form.output.remove()
@@ -449,7 +449,7 @@ function _c1(color) {
   return color({
     value: '#0000ff',
     title: 'Background Color',
-    description: 'This color picker starts out blue'
+    description: 'This color picker starts out blue',
   })
 }
 
@@ -461,7 +461,7 @@ function _color(input) {
       description,
       disabled,
       submit,
-      display
+      display,
     } = typeof config === 'string' ? { value: config } : config
     const form = input({
       type: 'color',
@@ -469,7 +469,7 @@ function _color(input) {
       description,
       submit,
       display,
-      attributes: { disabled, value }
+      attributes: { disabled, value },
     })
     // The following two lines are a bugfix for Safari, which hopefully can be removed in the future.
     form.input.value = ''
@@ -506,7 +506,7 @@ function _coords2(coordinates) {
     title: 'Hometown',
     description: 'Enter the coordinates of where you were born',
     value: [-122.27, 37.87],
-    submit: true
+    submit: true,
   })
 }
 
@@ -520,7 +520,7 @@ function _coordinates(html, input) {
       value = [],
       title,
       description,
-      submit
+      submit,
     } = Array.isArray(config) ? { value: config } : config
     let [lon, lat] = value
     lon = lon != null ? lon : ''
@@ -567,7 +567,7 @@ function _coordinates(html, input) {
             ${latEl}
           </label>
         </form>
-      `
+      `,
     })
     form.output.remove()
     return form
@@ -602,7 +602,7 @@ function _worldMapCoordinates(html, DOM, d3geo, graticule, land, countries, inpu
       value = [],
       title,
       description,
-      width = 400
+      width = 400,
     } = Array.isArray(config) ? { value: config } : config
     const height = Math.round((210 / 400) * width)
     let [lon, lat] = value
@@ -667,7 +667,7 @@ function _worldMapCoordinates(html, DOM, d3geo, graticule, land, countries, inpu
           &nbsp; <span style="color: #777;">Latitude:</span> ${lat != null ? lat.toFixed(2) : ''}
         </div>`,
       getValue: () => [lon != null ? lon : null, lat != null ? lat : null],
-      form: formEl
+      form: formEl,
     })
     return form
   }
@@ -700,7 +700,7 @@ function _usaMap2(usaMapCoordinates) {
     title: 'A Mini Map',
     description: 'Defaults to New York City',
     width: 200,
-    value: [-74, 40.71]
+    value: [-74, 40.71],
   })
 }
 
@@ -714,7 +714,7 @@ function _usaMapCoordinates(html, DOM, d3geo, nation, states, input) {
       value = [],
       title,
       description,
-      width = 400
+      width = 400,
     } = Array.isArray(config) ? { value: config } : config
     const scale = width / 960
     const height = scale * 600
@@ -748,7 +748,7 @@ function _usaMapCoordinates(html, DOM, d3geo, nation, states, input) {
       if (lon != null && lat != null) {
         const pointPath = {
           type: 'MultiPoint',
-          coordinates: [projection([lon, lat])]
+          coordinates: [projection([lon, lat])],
         }
         context.beginPath()
         path(pointPath)
@@ -781,7 +781,7 @@ function _usaMapCoordinates(html, DOM, d3geo, nation, states, input) {
           <span style="color: #777;">Latitude:</span> ${lat != null ? lat : ''}
         </div>`,
       getValue: () => [lon != null ? lon : null, lat != null ? lat : null],
-      form: formEl
+      form: formEl,
     })
     return form
   }
@@ -811,7 +811,7 @@ function _d1(date) {
     min: '2017-01-01',
     max: '2017-12-31',
     value: '2017-01-01',
-    description: 'Only dates within the 2017 calendar year are allowed'
+    description: 'Only dates within the 2017 calendar year are allowed',
   })
 }
 
@@ -824,7 +824,7 @@ function _date(input) {
       title,
       description,
       display,
-      attributes: { min, max, disabled, value }
+      attributes: { min, max, disabled, value },
     })
   }
 }
@@ -859,7 +859,7 @@ function _t1(time) {
     max: '23:59:59',
     value: '13:00:00',
     step: 1,
-    description: 'Only times after noon are allowed, and seconds are included'
+    description: 'Only times after noon are allowed, and seconds are included',
   })
 }
 
@@ -877,7 +877,7 @@ function _time(input) {
       description,
       display,
       getValue: (d) => (d.value ? d.value : undefined),
-      attributes: { min, max, step, disabled, value }
+      attributes: { min, max, step, disabled, value },
     })
     el.output.remove()
     return el
@@ -906,7 +906,7 @@ function _e1(file) {
     description:
       'Only .jpg files are allowed in this example. Choose some images, and they’ll appear in the cell below.',
     accept: '.jpg',
-    multiple: true
+    multiple: true,
   })
 }
 
@@ -934,7 +934,7 @@ function _file(input) {
           form.value = multiple ? form.input.files : form.input.files[0]
           form.dispatchEvent(new CustomEvent('input'))
         }
-      }
+      },
     })
     form.output.remove()
     form.input.onchange()
@@ -962,7 +962,7 @@ function _f1(text) {
   return text({
     title: 'A Text Input',
     placeholder: 'Placeholder text',
-    description: 'Note that text inputs don’t show output on the right'
+    description: 'Note that text inputs don’t show output on the right',
   })
 }
 
@@ -974,7 +974,7 @@ function _f2(text) {
   return text({
     placeholder: 'Placeholder text',
     description: 'This input only changes value on submit',
-    submit: 'Go'
+    submit: 'Go',
   })
 }
 
@@ -996,7 +996,7 @@ function _text(input) {
       placeholder,
       size,
       submit,
-      getValue
+      getValue,
     } = typeof config === 'string' ? { value: config } : config
     const form = input({
       type: 'text',
@@ -1012,8 +1012,8 @@ function _text(input) {
         pattern,
         placeholder,
         size,
-        disabled
-      }
+        disabled,
+      },
     })
     form.output.remove()
     form.input.style.fontSize = '1em'
@@ -1048,7 +1048,7 @@ function _g1(textarea) {
     spellcheck: true,
     width: '100%',
     rows: 10,
-    submit: 'Publish'
+    submit: 'Publish',
   })
 }
 
@@ -1073,7 +1073,7 @@ function _textarea(input, html) {
       wrap,
       submit,
       disabled,
-      getValue
+      getValue,
     } = typeof config === 'string' ? { value: config } : config
     const form = input({
       form: html`<form>
@@ -1091,8 +1091,8 @@ function _textarea(input, html) {
         placeholder,
         spellcheck,
         wrap,
-        disabled
-      }
+        disabled,
+      },
     })
     form.output.remove()
     if (width != null) form.input.style.width = width
@@ -1130,9 +1130,9 @@ function _r1(radio) {
     options: [
       { label: 'By Email', value: 'email' },
       { label: 'By Phone', value: 'phone' },
-      { label: 'By Pager', value: 'pager' }
+      { label: 'By Pager', value: 'pager' },
     ],
-    value: 'pager'
+    value: 'pager',
   })
 }
 
@@ -1148,7 +1148,7 @@ function _radio(input, html) {
       description,
       submit,
       options,
-      disabled
+      disabled,
     } = Array.isArray(config) ? { options: config } : config
     options = options.map((o) => (typeof o === 'string' ? { value: o, label: o } : o))
     const form = input({
@@ -1180,7 +1180,7 @@ function _radio(input, html) {
             return tag
           })}
         </form>
-      `
+      `,
     })
     form.output.remove()
     return form
@@ -1218,10 +1218,10 @@ function _ch1(checkbox) {
       { value: 'g', label: 'Green' },
       { value: 'b', label: 'Blue' },
       { value: 'i', label: 'Indigo' },
-      { value: 'v', label: 'Violet' }
+      { value: 'v', label: 'Violet' },
     ],
     value: ['r', 'g', 'b'],
-    submit: true
+    submit: true,
   })
 }
 
@@ -1233,7 +1233,7 @@ function _ch3(checkbox) {
   return checkbox({
     description: 'Just a single checkbox to toggle',
     options: [{ value: 'toggle', label: 'On' }],
-    value: 'toggle'
+    value: 'toggle',
   })
 }
 
@@ -1249,7 +1249,7 @@ function _checkbox(input, html) {
       description,
       submit,
       disabled,
-      options
+      options,
     } = Array.isArray(config) ? { options: config } : config
     options = options.map((o) => (typeof o === 'string' ? { value: o, label: o } : o))
     const form = input({
@@ -1281,7 +1281,7 @@ function _checkbox(input, html) {
             return tag
           })}
         </form>
-      `
+      `,
     })
     form.output.remove()
     return form
@@ -1327,7 +1327,7 @@ function _number(input) {
       submit,
       step = 'any',
       min,
-      max
+      max,
     } = typeof config === 'number' || typeof config === 'string' ? { value: +config } : config
     const form = input({
       type: 'number',
@@ -1341,9 +1341,9 @@ function _number(input) {
         min,
         max,
         autocomplete: 'off',
-        disabled
+        disabled,
       },
-      getValue: (input) => input.valueAsNumber
+      getValue: (input) => input.valueAsNumber,
     })
     form.output.remove()
     form.input.style.width = 'auto'
@@ -1377,7 +1377,7 @@ function _i1(password) {
     title: 'Your super secret password',
     description: 'Less than 12 characters, please.',
     minlength: 6,
-    maxlength: 12
+    maxlength: 12,
   })
 }
 
@@ -1398,7 +1398,7 @@ function _password(input) {
       pattern,
       placeholder,
       size,
-      submit
+      submit,
     } = typeof config === 'string' ? { value: config } : config
     const form = input({
       type: 'password',
@@ -1413,8 +1413,8 @@ function _password(input) {
         pattern,
         placeholder,
         size,
-        disabled
-      }
+        disabled,
+      },
     })
     form.output.remove()
     form.input.style.fontSize = '1em'
@@ -1453,7 +1453,7 @@ function _input(html, d3format) {
       format,
       display,
       submit,
-      options
+      options,
     } = config
     const wrapper = html`<div></div>`
     if (!form)
@@ -1598,9 +1598,9 @@ export default function define(runtime, observer) {
           import.meta.url
         ),
         mimeType: 'image/gif',
-        toString
-      }
-    ]
+        toString,
+      },
+    ],
   ])
   main.builtin(
     'FileAttachment',

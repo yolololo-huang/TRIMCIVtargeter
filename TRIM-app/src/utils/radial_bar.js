@@ -66,7 +66,7 @@ export function drawRadialBarChart(container, TRIMsTrueGeneNum, onRadialBarClick
     .append('tspan')
     .attr('x', 0)
     .attr('y', (d, i) => `${i * 1.5}em`) // Increased line spacing
-    .text(d => d)
+    .text((d) => d)
   // Draw the bars with transition using .join
   svg
     .append('g')

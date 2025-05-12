@@ -1,31 +1,31 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
-import { gsap } from 'gsap'
+  import { onMounted } from 'vue'
+  import { gsap } from 'gsap'
 
-onMounted(() => {
-  const animation = gsap.fromTo(
-    '.gosubmit-icon',
-    { opacity: 1, x: '0%' },
-    {
-      duration: 1,
-      opacity: 1,
-      x: '50%',
-      ease: 'power1.inOut',
-      repeat: -1,
-      yoyo: true
-    }
-  )
+  onMounted(() => {
+    const animation = gsap.fromTo(
+      '.gosubmit-icon',
+      { opacity: 1, x: '0%' },
+      {
+        duration: 1,
+        opacity: 1,
+        x: '50%',
+        ease: 'power1.inOut',
+        repeat: -1,
+        yoyo: true,
+      }
+    )
 
-  const icon = document.querySelector('.gosubmit-icon')
-  icon?.addEventListener('mouseenter', () => {
-    gsap.to('.gosubmit-icon', { duration: 0.5, opacity: 1 })
-    animation.pause()
+    const icon = document.querySelector('.gosubmit-icon')
+    icon?.addEventListener('mouseenter', () => {
+      gsap.to('.gosubmit-icon', { duration: 0.5, opacity: 1 })
+      animation.pause()
+    })
+    icon?.addEventListener('mouseleave', () => {
+      gsap.to('.gosubmit-icon', { duration: 0.5, opacity: 1 })
+      animation.resume()
+    })
   })
-  icon?.addEventListener('mouseleave', () => {
-    gsap.to('.gosubmit-icon', { duration: 0.5, opacity: 1 })
-    animation.resume()
-  })
-})
 </script>
 
 <template>
@@ -47,10 +47,10 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.gosubmit-icon {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 50px;
-}
+  .gosubmit-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+  }
 </style>

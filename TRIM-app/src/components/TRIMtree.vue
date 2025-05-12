@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { Runtime, Inspector } from '@observablehq/runtime'
-import define1 from '@/utils/05775bc344fcf638@146'
-import { Loading } from '@element-plus/icons-vue'
+  import { Runtime, Inspector } from '@observablehq/runtime'
+  import define1 from '@/utils/05775bc344fcf638@146'
+  import { Loading } from '@element-plus/icons-vue'
 
-onMounted(() => {
-  const runtime = new Runtime()
-  runtime.module(define1, (name: string) => {
-    if (name === 'chart') {
-      return new Inspector(document.querySelector('#observablehq-tree-of-life'))
-    }
+  onMounted(() => {
+    const runtime = new Runtime()
+    runtime.module(define1, (name: string) => {
+      if (name === 'chart') {
+        return new Inspector(document.querySelector('#observablehq-tree-of-life'))
+      }
+    })
   })
-})
 </script>
 
 <template>
@@ -50,18 +50,18 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.tree-of-life {
-  width: 100%; /* 使SVG宽度适应父容器 */
-  height: 550px; /* 设置SVG的高度 */
-  margin: 0 auto; /* 居中显示 */
-}
-.tooltip {
-  position: absolute;
-  background-color: rgb(255, 255, 255);
-  border: 1px solid black;
-  padding: 5px;
-  display: none;
-  pointer-events: none;
-  font-size: 12px;
-}
+  .tree-of-life {
+    width: 100%; /* 使SVG宽度适应父容器 */
+    height: 550px; /* 设置SVG的高度 */
+    margin: 0 auto; /* 居中显示 */
+  }
+  .tooltip {
+    position: absolute;
+    background-color: rgb(255, 255, 255);
+    border: 1px solid black;
+    padding: 5px;
+    display: none;
+    pointer-events: none;
+    font-size: 12px;
+  }
 </style>

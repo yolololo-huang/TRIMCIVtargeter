@@ -1,58 +1,58 @@
 <script setup lang="ts">
-import { setupHeatmap } from '@/utils/echartsSetup'
-import { TRIMorder } from '@/assets/TRIMorder'
-import { getTMscore } from '@/services/api'
+  import { setupHeatmap } from '@/utils/echartsSetup'
+  import { TRIMorder } from '@/assets/TRIMorder'
+  import { getTMscore } from '@/services/api'
 
-const selectedChart = ref('chart_TRIMCtm')
-const chart_TRIMtm = ref(null)
-const chart_TRIMCtm = ref(null)
+  const selectedChart = ref('chart_TRIMCtm')
+  const chart_TRIMtm = ref(null)
+  const chart_TRIMCtm = ref(null)
 
-const TRIMs_TMSCORE = ref([])
-const TRIMs_C_TMSCORE = ref([])
+  const TRIMs_TMSCORE = ref([])
+  const TRIMs_C_TMSCORE = ref([])
 
-const fetchData = async () => {
-  try {
-    const data = await getTMscore()
+  const fetchData = async () => {
+    try {
+      const data = await getTMscore()
 
-    // 处理 TRIMs_TMSCORE 数据
-    TRIMs_TMSCORE.value = data.map((item) => {
-      const { rmsd_c, tmscore_c, ...rest } = item
-      return rest
-    })
-
-    // 处理 TRIMs_C_TMSCORE 数据
-    TRIMs_C_TMSCORE.value = data
-      .filter((item) => item.rmsd_c !== null && item.tmscore_c !== null)
-      .map((item) => {
+      // 处理 TRIMs_TMSCORE 数据
+      TRIMs_TMSCORE.value = data.map((item) => {
         const { rmsd_c, tmscore_c, ...rest } = item
-        return {
-          ...rest,
-          rmsd: rmsd_c,
-          tmscore: tmscore_c
-        }
+        return rest
       })
-    drawChart()
-  } catch (error) {
-    console.error('Error fetching data:', error)
-  }
-}
-const drawChart = () => {
-  if (selectedChart.value === 'chart_TRIMtm') {
-    nextTick(() => {
-      setupHeatmap(chart_TRIMtm.value, TRIMs_TMSCORE.value, TRIMorder)
-    })
-  } else if (selectedChart.value === 'chart_TRIMCtm') {
-    nextTick(() => {
-      setupHeatmap(chart_TRIMCtm.value, TRIMs_C_TMSCORE.value, TRIMorder)
-    })
-  }
-}
 
-watch(selectedChart, drawChart)
+      // 处理 TRIMs_C_TMSCORE 数据
+      TRIMs_C_TMSCORE.value = data
+        .filter((item) => item.rmsd_c !== null && item.tmscore_c !== null)
+        .map((item) => {
+          const { rmsd_c, tmscore_c, ...rest } = item
+          return {
+            ...rest,
+            rmsd: rmsd_c,
+            tmscore: tmscore_c,
+          }
+        })
+      drawChart()
+    } catch (error) {
+      console.error('Error fetching data:', error)
+    }
+  }
+  const drawChart = () => {
+    if (selectedChart.value === 'chart_TRIMtm') {
+      nextTick(() => {
+        setupHeatmap(chart_TRIMtm.value, TRIMs_TMSCORE.value, TRIMorder)
+      })
+    } else if (selectedChart.value === 'chart_TRIMCtm') {
+      nextTick(() => {
+        setupHeatmap(chart_TRIMCtm.value, TRIMs_C_TMSCORE.value, TRIMorder)
+      })
+    }
+  }
 
-onMounted(() => {
-  fetchData()
-})
+  watch(selectedChart, drawChart)
+
+  onMounted(() => {
+    fetchData()
+  })
 </script>
 
 <template>
@@ -95,7 +95,7 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
-.heatmap {
-  margin: 0px;
-}
+  .heatmap {
+    margin: 0px;
+  }
 </style>

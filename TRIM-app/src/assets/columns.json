@@ -1,17 +1,49 @@
 {
   "columns_info": [
-    { "key": "predicted_CIV", "label": "Result", "info": "The prediction result indicating whether the protein is predicted to be a target of the TRIMCIV group based on its characteristics" },
-    { "key": "predicted_proba", "label": "Probability", "info": "The probability of the prediction given by the model" },
-    { "key": "source", "label": "Model", "info": "The model used to predict transcriptomic or proteomic expression data" },
+    {
+      "key": "prediction",
+      "label": "Result",
+      "info": "The prediction result indicating whether the protein is predicted to be a target of the TRIMCIV group based on its characteristics"
+    },
+    {
+      "key": "probability",
+      "label": "Probability",
+      "info": "The probability of the prediction given by the model"
+    },
+    {
+      "key": "source",
+      "label": "Model",
+      "info": "The model used to predict transcriptomic or proteomic expression data"
+    },
     { "key": "gene_name", "label": "Target", "info": "The gene name of the protein" },
-    { "key": "adj.P.Val", "label": "p.logFC", "info": "Expression correlation by spearmanr , with a adjusted p value of 0.01"},
+    {
+      "key": "adj.P.Val",
+      "label": "p.logFC",
+      "info": "Expression correlation by spearmanr , with a adjusted p value of 0.01"
+    },
     { "key": "pValue", "label": "p.R", "info": "P-Value" },
-    { "key": "zrank_score", "label": "Affinity", "info": "The docking score representing the physical affinity between the gene and the TRIM member; The lower score indicates higher affinity" },
+    {
+      "key": "zrank_score",
+      "label": "Affinity",
+      "info": "The docking score representing the physical affinity between the gene and the TRIM member; The lower score indicates higher affinity"
+    },
     { "key": "disease", "label": "Cancer", "info": "Disease type" },
-    { "key": "logFC", "label": "LogFC", "info": "Log2 fold change of gene expression by limma, with a adjusted p value of 0.01" },
-    { "key": "dataset", "label": "Dataset", "info": "Datasets from diseases, including transcriptomic or proteomic expression data" },
+    {
+      "key": "logFC",
+      "label": "LogFC",
+      "info": "Log2 fold change of gene expression by limma, with a adjusted p value of 0.01"
+    },
+    {
+      "key": "dataset",
+      "label": "Dataset",
+      "info": "Datasets from diseases, including transcriptomic or proteomic expression data"
+    },
     { "key": "TRIM", "label": "TRIM", "info": "The member of the TRIM family" },
-    { "key": "R", "label": "R", "info": "The correlation coefficient of the gene with the TRIM in transcriptomic or proteomic expression data" },
+    {
+      "key": "R",
+      "label": "R",
+      "info": "The correlation coefficient of the gene with the TRIM in transcriptomic or proteomic expression data"
+    },
     { "key": "TRIM_uid", "label": "TRIM_uid", "info": "The UniProt ID of the TRIM member" },
     { "key": "reported", "label": "Reported", "info": "Reported status" },
     { "key": "target_uid", "label": "Target_uid", "info": "The UniProt ID of the protein" },

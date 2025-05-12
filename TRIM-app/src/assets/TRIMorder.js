@@ -75,5 +75,5 @@ export const TRIMorder = [
   'TRIM66',
   'TRIM70',
   'CMYA5',
-  'TRIML2'
+  'TRIML2',
 ]

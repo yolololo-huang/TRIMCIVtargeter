@@ -351,7 +351,7 @@ function _54(Inputs, html) {
       [
         ['DIY inputs', '/@bartok32/diy-inputs'],
         'Bartosz Prusinowski',
-        'inputs with fun, custom styles'
+        'inputs with fun, custom styles',
       ],
       [['FineRange', '/@rreusser/fine-range'], 'Ricky Reusser', 'high-precision numeric control'],
       [['Form Input', '/@mbostock/form-input'], 'Mike Bostock', 'multiple inputs in single cell'],
@@ -360,66 +360,66 @@ function _54(Inputs, html) {
       [
         ['Scrubber', '/@mbostock/scrubber'],
         'Mike Bostock',
-        'play/pause/scrub control for animation'
+        'play/pause/scrub control for animation',
       ],
       [['Range Slider', '/@mootari/range-slider'], 'Fabian Iwand', 'a two-ended range'],
       [
         ['Ternary Slider', '/@yurivish/ternary-slider'],
         'Yuri Vishnevsky',
-        'a proportion of three values'
+        'a proportion of three values',
       ],
       [
         ['Data driven range sliders', '/@bumbeishvili/data-driven-range-sliders'],
         'David B.',
-        'a range input with a histogram'
+        'a range input with a histogram',
       ],
       [
         ['Snapping Histogram Slider', '/@trebor/snapping-histogram-slider'],
         'Robert Harris',
-        'a range input with a histogram'
+        'a range input with a histogram',
       ],
       [
         ['Inputs in grid', '/@bumbeishvili/input-groups'],
         'David B.',
-        'combine multiple inputs into a compact grid'
+        'combine multiple inputs into a compact grid',
       ],
       [
         ['List Input', '/@harrislapiroff/list-input'],
         'Harris L.',
-        'enter more than one of something'
+        'enter more than one of something',
       ],
       [['Copier', '/@mbostock/copier'], 'Mike Bostock', 'a button to copy to the clipboard'],
       [
         ['Tangle', '/@mbostock/tangle'],
         'Mike Bostock',
-        'Bret Victor-inspired inline scrubbable numbers'
+        'Bret Victor-inspired inline scrubbable numbers',
       ],
       [
         ['Editor', '/@cmudig/editor'],
         'CMU Data Interaction Group',
-        'code editor with syntax highlighting'
+        'code editor with syntax highlighting',
       ],
       [
         ['Color Scheme Picker', '/@zechasault/color-schemes-and-interpolators-picker'],
         'Zack Ciminera',
-        'pick a D3 color scheme'
+        'pick a D3 color scheme',
       ],
       [
         ['Easing Curve Editor', '/@nhogs/easing-graphs-editor'],
         'Nhogs',
-        'create a custom easing curve'
-      ]
+        'create a custom easing curve',
+      ],
     ].map(([Name, Author, Description]) => ({ Name, Author, Description })),
     {
       sort: 'Name',
       rows: Infinity,
       layout: 'auto',
       width: {
-        Description: '60%'
+        Description: '60%',
       },
       format: {
-        Name: ([title, link]) => html`<a href=${link} target="_blank">${title}</a>`
-      }
+        Name: ([title, link]) => html`<a href=${link} target="_blank">${title}</a>`,
+      },
     }
   )
 }
@@ -526,9 +526,9 @@ export default function define(runtime, observer) {
           import.meta.url
         ),
         mimeType: 'text/tab-separated-values',
-        toString
-      }
-    ]
+        toString,
+      },
+    ],
   ])
   main.builtin(
     'FileAttachment',

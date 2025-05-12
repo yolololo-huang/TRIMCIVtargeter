@@ -1,94 +1,94 @@
 <script setup lang="ts">
-import { ElMessage, ElMessageBox } from 'element-plus'
-import type { FormItemRule, FormInstance } from 'element-plus'
-import { submitNew } from '@/services/api'
-import emailjs from '@emailjs/browser'
+  import { ElMessage, ElMessageBox } from 'element-plus'
+  import type { FormItemRule, FormInstance } from 'element-plus'
+  import { submitNew } from '@/services/api'
+  import emailjs from '@emailjs/browser'
 
-const formRef = ref<FormInstance | null>(null)
-const form = ref({
-  TRIM: '',
-  target: '',
-  target_uid: '',
-  disease: '',
-  evidence: '',
-  level: '',
-  citation: '',
-  messages: '',
-  name: '',
-  email: ''
-})
-
-// Use a ref for dynamic rules
-const formRules = ref<Record<string, FormItemRule[]>>({
-  TRIM: [{ required: true, message: 'Please input the TRIM member', trigger: 'blur' }],
-  target: [{ required: true, message: 'Please input the target name', trigger: 'blur' }],
-  target_uid: [{ required: true, message: 'Please input the Uniprot ID', trigger: 'blur' }],
-  disease: [{ required: true, message: 'Please input the disease', trigger: 'blur' }],
-  evidence: [{ required: true, message: 'Please select the evidence', trigger: 'change' }],
-  level: [{ required: true, message: 'Please select the target level ', trigger: 'change' }],
-  citation: [
-    {
-      required: form.value.evidence === 'TRUE',
-      message: 'Please input the citation of the published paper',
-      trigger: 'blur'
-    }
-  ],
-  email: [
-    { required: true, message: 'Please input your email', trigger: 'blur' },
-    { type: 'email', message: 'Please input a valid email address', trigger: ['blur', 'change'] }
-  ]
-})
-
-watch(
-  () => form.value.evidence,
-  (newVal) => {
-    if (newVal === 'TRUE') {
-      formRules.value.citation[0].required = true
-    } else {
-      formRules.value.citation[0].required = false
-    }
-  }
-)
-
-const onSubmit = () => {
-  formRef.value?.validate(async (valid) => {
-    try {
-      if (valid) {
-        const response = await submitNew(form.value)
-        const templateParams = {
-          from_name: 'SubmitPage',
-          messages: form.value.messages,
-          user_name: form.value.name,
-          user_email: form.value.email
-        }
-        emailjs.init({
-          publicKey: '1jduY049tSgeBvC_8'
-        })
-
-        emailjs.send('service_jdp892o', 'template_sk8ay3t', templateParams).then(
-          (response) => {
-            ElMessageBox.alert('Submit success! Thank you for your contribution.', 'Success', {
-              confirmButtonText: 'OK',
-              type: 'success'
-            })
-          },
-          (error) => {
-            ElMessage.error('Submission failed. Please try again.')
-          }
-        )
-      } else {
-        ElMessage.error('Please fill in the required fields')
-        return
-      }
-    } catch (error) {
-      console.error('Error submitting form:', error)
-    }
+  const formRef = ref<FormInstance | null>(null)
+  const form = ref({
+    TRIM: '',
+    target: '',
+    target_uid: '',
+    disease: '',
+    evidence: '',
+    level: '',
+    citation: '',
+    messages: '',
+    name: '',
+    email: '',
   })
-}
 
-const onReset = () => {
-  formRef.value?.resetFields()
-}
+  // Use a ref for dynamic rules
+  const formRules = ref<Record<string, FormItemRule[]>>({
+    TRIM: [{ required: true, message: 'Please input the TRIM member', trigger: 'blur' }],
+    target: [{ required: true, message: 'Please input the target name', trigger: 'blur' }],
+    target_uid: [{ required: true, message: 'Please input the Uniprot ID', trigger: 'blur' }],
+    disease: [{ required: true, message: 'Please input the disease', trigger: 'blur' }],
+    evidence: [{ required: true, message: 'Please select the evidence', trigger: 'change' }],
+    level: [{ required: true, message: 'Please select the target level ', trigger: 'change' }],
+    citation: [
+      {
+        required: form.value.evidence === 'TRUE',
+        message: 'Please input the citation of the published paper',
+        trigger: 'blur',
+      },
+    ],
+    email: [
+      { required: true, message: 'Please input your email', trigger: 'blur' },
+      { type: 'email', message: 'Please input a valid email address', trigger: ['blur', 'change'] },
+    ],
+  })
+
+  watch(
+    () => form.value.evidence,
+    (newVal) => {
+      if (newVal === 'TRUE') {
+        formRules.value.citation[0].required = true
+      } else {
+        formRules.value.citation[0].required = false
+      }
+    }
+  )
+
+  const onSubmit = () => {
+    formRef.value?.validate(async (valid) => {
+      try {
+        if (valid) {
+          const response = await submitNew(form.value)
+          const templateParams = {
+            from_name: 'SubmitPage',
+            messages: form.value.messages,
+            user_name: form.value.name,
+            user_email: form.value.email,
+          }
+          emailjs.init({
+            publicKey: '1jduY049tSgeBvC_8',
+          })
+
+          emailjs.send('service_jdp892o', 'template_sk8ay3t', templateParams).then(
+            (response) => {
+              ElMessageBox.alert('Submit success! Thank you for your contribution.', 'Success', {
+                confirmButtonText: 'OK',
+                type: 'success',
+              })
+            },
+            (error) => {
+              ElMessage.error('Submission failed. Please try again.')
+            }
+          )
+        } else {
+          ElMessage.error('Please fill in the required fields')
+          return
+        }
+      } catch (error) {
+        console.error('Error submitting form:', error)
+      }
+    })
+  }
+
+  const onReset = () => {
+    formRef.value?.resetFields()
+  }
 </script>
 
 <template>
@@ -186,8 +186,8 @@ const onReset = () => {
 </template>
 
 <style scoped>
-.el-form-item:last-child {
-  display: flex;
-  justify-content: space-between;
-}
+  .el-form-item:last-child {
+    display: flex;
+    justify-content: space-between;
+  }
 </style>

@@ -66,7 +66,7 @@ export function createChordDiagram(chord_names, matrix, clickedTitle, clickedEnt
     })
     .style('cursor', 'pointer')
     .style('font-size', '10px')
-    .style('fill',(d,i) => chord_names[i].group === 'CIV' ? '#8c07dd' : null)
+    .style('fill', (d, i) => (chord_names[i].group === 'CIV' ? '#8c07dd' : null))
     .text((d, i) => chord_names[i].name)
     .on('click', (event, d) => {
       clickedTitle.value = chord_names[d.index].Entry ? chord_names[d.index].name : ''
@@ -102,13 +102,13 @@ export function createChordDiagram(chord_names, matrix, clickedTitle, clickedEnt
   // 添加 C domain 和 N domain 的 arc 和 text
   const domainGroups = [
     { start: 77, end: 81, text: 'N domain' },
-    { start: 82, end: 93, text: 'C domain' }
+    { start: 82, end: 93, text: 'C domain' },
   ]
 
   domainGroups.forEach((domain, index) => {
     const domainArc = {
       startAngle: chords.groups[domain.start].startAngle,
-      endAngle: chords.groups[domain.end].endAngle
+      endAngle: chords.groups[domain.end].endAngle,
     }
     const angle = (domainArc.startAngle + domainArc.endAngle) / 2
     svg

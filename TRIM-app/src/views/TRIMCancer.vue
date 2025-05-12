@@ -1,26 +1,26 @@
 <script setup lang="ts">
-const locale = {
-  DEGLanscape: 'DEGs Landscape',
-  CorLanscape: 'Correlation Landscape',
-  DataSource: 'Data sources'
-}
-const activeAnchor = ref('')
-
-const handleAnchorClick = (id: string) => {
-  activeAnchor.value = id
-
-  const element = document.getElementById(id)
-  if (element) {
-    const topOffset = 120 // 偏移量，例如向上偏移 100px
-    const elementPosition = element.offsetTop
-    const offsetPosition = elementPosition - topOffset
-
-    window.scrollTo({
-      top: offsetPosition,
-      behavior: 'smooth'
-    })
+  const locale = {
+    DEGLanscape: 'DEGs Landscape',
+    CorLanscape: 'Correlation Landscape',
+    DataSource: 'Data sources',
   }
-}
+  const activeAnchor = ref('')
+
+  const handleAnchorClick = (id: string) => {
+    activeAnchor.value = id
+
+    const element = document.getElementById(id)
+    if (element) {
+      const topOffset = 120 // 偏移量，例如向上偏移 100px
+      const elementPosition = element.offsetTop
+      const offsetPosition = elementPosition - topOffset
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth',
+      })
+    }
+  }
 </script>
 
 <template>
@@ -64,7 +64,7 @@ const handleAnchorClick = (id: string) => {
 </template>
 
 <style lang="scss" scoped>
-.section {
-  scroll-margin-top: 200px; /* 偏移量，例如向上偏移 100px */
-}
+  .section {
+    scroll-margin-top: 200px; /* 偏移量，例如向上偏移 100px */
+  }
 </style>

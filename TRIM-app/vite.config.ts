@@ -18,23 +18,23 @@ export default defineConfig({
       resolvers: [
         ElementPlusResolver(),
         IconsResolver({
-          prefix: 'Icon'
-        })
+          prefix: 'Icon',
+        }),
       ],
 
-      eslintrc: { enabled: true } //会报no-undef错误, 添加生成eslintrc-auto-import.json,添加到.eslintrc.cjs中
+      eslintrc: { enabled: true }, //会报no-undef错误, 添加生成eslintrc-auto-import.json,添加到.eslintrc.cjs中
     }),
     Components({
       resolvers: [
         IconsResolver({
-          enabledCollections: ['ep'] //Element Plus
+          enabledCollections: ['ep'], //Element Plus
         }),
-        ElementPlusResolver()
-      ]
+        ElementPlusResolver(),
+      ],
     }),
     Icons({
-      autoInstall: true
-    })
+      autoInstall: true,
+    }),
   ],
   server: {
     proxy: {
@@ -42,15 +42,15 @@ export default defineConfig({
         target: 'http://localhost:3000', // 后端服务地址
         changeOrigin: true, // 修改请求的 origin
         // rewrite: (path) => path.replace(/^\/api/, '') // 如果需要，可以重写路径
-      }
-    }
+      },
+    },
   },
   define: {
-    global: {}
+    global: {},
   },
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
-    }
-  }
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+    },
+  },
 })

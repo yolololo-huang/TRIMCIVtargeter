@@ -1,216 +1,218 @@
 <script setup lang="ts">
-import type { CSSProperties } from 'vue'
-import { fetchCorTables, fetchCorTRIMsData, fetchRecommendedGNsCor } from '@/services/api'
-import Cascader_TRIMs from '@/assets/Cascader_TRIMs.json'
-import Cascader_Dis_label from '@/assets/datasetInfo.json'
+  import type { CSSProperties } from 'vue'
+  import { fetchCorTables, fetchCorTRIMsData, fetchRecommendedGNsCor } from '@/services/api'
+  import Cascader_TRIMs from '@/assets/Cascader_TRIMs.json'
+  import Cascader_Dis_label from '@/assets/datasetInfo.json'
 
-const selectedTables = ref<any[]>([])
-const selectedTRIMs = ref<any[]>([])
-const selectedGeneNames = ref<string[]>([])
-const tableData = ref([])
-const tableColumns = ref<string[]>([])
-const RecommendedGNs = ref([])
-const CascaderTRIMs = ref<any[]>([])
-const CascaderOptions = ref<any[]>([])
-const loading = ref(false)
+  const selectedTables = ref<any[]>([])
+  const selectedTRIMs = ref<any[]>([])
+  const selectedGeneNames = ref<string[]>([])
+  const tableData = ref([])
+  const tableColumns = ref<string[]>([])
+  const RecommendedGNs = ref([])
+  const CascaderTRIMs = ref<any[]>([])
+  const CascaderOptions = ref<any[]>([])
+  const loading = ref(false)
 
-const propsCas = { multiple: true }
+  const propsCas = { multiple: true }
 
-interface CascaderOption {
-  value: string
-  label: string
-  children?: CascaderOption[]
-}
+  interface CascaderOption {
+    value: string
+    label: string
+    children?: CascaderOption[]
+  }
 
-const generateCascaderOptions = (tables: string[]): CascaderOption[] => {
-  const optionsMap: { [key: string]: CascaderOption } = {}
+  const generateCascaderOptions = (tables: string[]): CascaderOption[] => {
+    const optionsMap: { [key: string]: CascaderOption } = {}
 
-  const labelMap: { [key: string]: string } = {}
-  const diseaseDetailMap: { [key: string]: string } = {}
-  Cascader_Dis_label.forEach((item) => {
-    labelMap[item.tableName] = `${item.abbre} (${item.disease})`
-    diseaseDetailMap[item.tableName] = `${item.dataset} (${item.disease_detail})`
-  })
-
-  tables.forEach((tbNames) => {
-    const parts = tbNames.split('_')
-    const firstPart = parts[0]
-
-    const lastPart = parts[parts.length - 1]
-    const secondLevelValue = lastPart === 'tcga' ? 'TCGA' : 'MS'
-    const secondLevelLabel = secondLevelValue === 'TCGA' ? 'RNAseq' : 'Mass spectrum'
-
-    const firstLevelLabel = labelMap[tbNames] || 'fail pairs'
-
-    if (!optionsMap[firstPart]) {
-      optionsMap[firstPart] = {
-        value: firstPart,
-        label: firstLevelLabel,
-        children: []
-      }
-    }
-
-    const parentOption = optionsMap[firstPart]
-
-    let secondLevelOption = parentOption.children?.find((child) => child.value === secondLevelValue)
-    if (!secondLevelOption) {
-      secondLevelOption = {
-        value: secondLevelValue,
-        label: secondLevelLabel,
-        children: []
-      }
-      parentOption.children?.push(secondLevelOption)
-    }
-
-    secondLevelOption.children?.push({
-      value: tbNames,
-      label: diseaseDetailMap[tbNames] || tbNames
+    const labelMap: { [key: string]: string } = {}
+    const diseaseDetailMap: { [key: string]: string } = {}
+    Cascader_Dis_label.forEach((item) => {
+      labelMap[item.tableName] = `${item.abbre} (${item.disease})`
+      diseaseDetailMap[item.tableName] = `${item.dataset} (${item.disease_detail})`
     })
-  })
-  return Object.values(optionsMap)
-}
-const getLeafCount = (node) => {
-  if (!node.children) {
-    return 0
-  }
-  let count = 0
-  const stack = [...node.children]
-  while (stack.length) {
-    const current = stack.pop()
-    if (current.children) {
-      stack.push(...current.children)
-    } else {
-      count++
-    }
-  }
-  return count
-}
-const fetchData = async () => {
-  const cordbtableNames = await fetchCorTables()
-  CascaderOptions.value = generateCascaderOptions(cordbtableNames)
-  CascaderTRIMs.value = Cascader_TRIMs
 
-  await handleSearch()
-}
+    tables.forEach((tbNames) => {
+      const parts = tbNames.split('_')
+      const firstPart = parts[0]
 
-const handleSearch = async () => {
-  const tables = selectedTables.value
-    .map((item) => (Array.isArray(item) ? item[item.length - 1] : item))
-    .join(',')
-  const TRIMs = selectedTRIMs.value
-    .map((item) => (Array.isArray(item) ? item[item.length - 1] : item))
-    .join(',')
+      const lastPart = parts[parts.length - 1]
+      const secondLevelValue = lastPart === 'tcga' ? 'TCGA' : 'MS'
+      const secondLevelLabel = secondLevelValue === 'TCGA' ? 'RNAseq' : 'Mass spectrum'
 
-  const geneNames = selectedGeneNames.value.length > 0 ? selectedGeneNames.value.join(',') : ''
+      const firstLevelLabel = labelMap[tbNames] || 'fail pairs'
 
-  try {
-    let data = await fetchCorTRIMsData(tables, TRIMs, geneNames)
-
-    if (geneNames) {
-      data = data.filter((item) => selectedGeneNames.value.includes(item.gene_name))
-    }
-
-    tableData.value = data
-    if (data.length > 0) {
-      const columns = Object.keys(data[0]).filter(
-        (col) => col === 'gene_name' || col === 'datasetName' || col.split('_')[1] === 'r'
-      )
-      tableColumns.value = ['datasetName', ...columns.filter((col) => col !== 'datasetName')]
-    }
-  } catch (error) {
-    console.error('Error fetching data:', error)
-  }
-}
-
-watch([selectedTables, selectedTRIMs, selectedGeneNames], handleSearch)
-
-const getCellStyle = ({
-  row,
-  column
-}: {
-  row: Record<string, any>
-  column: { property: string }
-}): CSSProperties => {
-  const colName = column.property
-  if (colName.split('_')[1] === 'r') {
-    const corrR = parseFloat(row[colName])
-    const TRIM_p = `${colName.split('_')[0]}_p`
-    const pValue = parseFloat(row[TRIM_p])
-    let backgroundColor = ''
-    let color = 'black'
-    if (!isNaN(corrR) && !isNaN(pValue)) {
-      if (pValue < 0.5) {
-        if (corrR > 0.1) {
-          backgroundColor = 'rgba(233,55,55,0.8)'
-        } else if (corrR < -0.1) {
-          backgroundColor = 'rgba(88,141,255,0.8)'
+      if (!optionsMap[firstPart]) {
+        optionsMap[firstPart] = {
+          value: firstPart,
+          label: firstLevelLabel,
+          children: [],
         }
+      }
+
+      const parentOption = optionsMap[firstPart]
+
+      let secondLevelOption = parentOption.children?.find(
+        (child) => child.value === secondLevelValue
+      )
+      if (!secondLevelOption) {
+        secondLevelOption = {
+          value: secondLevelValue,
+          label: secondLevelLabel,
+          children: [],
+        }
+        parentOption.children?.push(secondLevelOption)
+      }
+
+      secondLevelOption.children?.push({
+        value: tbNames,
+        label: diseaseDetailMap[tbNames] || tbNames,
+      })
+    })
+    return Object.values(optionsMap)
+  }
+  const getLeafCount = (node) => {
+    if (!node.children) {
+      return 0
+    }
+    let count = 0
+    const stack = [...node.children]
+    while (stack.length) {
+      const current = stack.pop()
+      if (current.children) {
+        stack.push(...current.children)
       } else {
-        color = 'rgba(174, 174, 174, 0.32)'
+        count++
       }
     }
-    return { backgroundColor, color }
+    return count
   }
-  return {}
-}
+  const fetchData = async () => {
+    const cordbtableNames = await fetchCorTables()
+    CascaderOptions.value = generateCascaderOptions(cordbtableNames)
+    CascaderTRIMs.value = Cascader_TRIMs
 
-const getInnerDivStyle = ({ column }: { column: { property: string } }): CSSProperties => {
-  const colName = column.property
-  if (colName.split('_')[1] === 'r') {
-    return {
-      padding: '3px',
-      borderRadius: '5px',
-      textAlign: 'center' as 'center', // Ensure type compatibility
-      height: '20px',
-      display: 'flex',
-      alignItems: 'center'
+    await handleSearch()
+  }
+
+  const handleSearch = async () => {
+    const tables = selectedTables.value
+      .map((item) => (Array.isArray(item) ? item[item.length - 1] : item))
+      .join(',')
+    const TRIMs = selectedTRIMs.value
+      .map((item) => (Array.isArray(item) ? item[item.length - 1] : item))
+      .join(',')
+
+    const geneNames = selectedGeneNames.value.length > 0 ? selectedGeneNames.value.join(',') : ''
+
+    try {
+      let data = await fetchCorTRIMsData(tables, TRIMs, geneNames)
+
+      if (geneNames) {
+        data = data.filter((item) => selectedGeneNames.value.includes(item.gene_name))
+      }
+
+      tableData.value = data
+      if (data.length > 0) {
+        const columns = Object.keys(data[0]).filter(
+          (col) => col === 'gene_name' || col === 'datasetName' || col.split('_')[1] === 'r'
+        )
+        tableColumns.value = ['datasetName', ...columns.filter((col) => col !== 'datasetName')]
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error)
     }
-  } else {
-    return {
-      color: 'black',
-      textAlign: 'center' as 'center', // Ensure type compatibility
-      height: '20px',
-      display: 'flex',
-      alignItems: 'center'
+  }
+
+  watch([selectedTables, selectedTRIMs, selectedGeneNames], handleSearch)
+
+  const getCellStyle = ({
+    row,
+    column,
+  }: {
+    row: Record<string, any>
+    column: { property: string }
+  }): CSSProperties => {
+    const colName = column.property
+    if (colName.split('_')[1] === 'r') {
+      const corrR = parseFloat(row[colName])
+      const TRIM_p = `${colName.split('_')[0]}_p`
+      const pValue = parseFloat(row[TRIM_p])
+      let backgroundColor = ''
+      let color = 'black'
+      if (!isNaN(corrR) && !isNaN(pValue)) {
+        if (pValue < 0.5) {
+          if (corrR > 0.1) {
+            backgroundColor = 'rgba(233,55,55,0.8)'
+          } else if (corrR < -0.1) {
+            backgroundColor = 'rgba(88,141,255,0.8)'
+          }
+        } else {
+          color = 'rgba(174, 174, 174, 0.32)'
+        }
+      }
+      return { backgroundColor, color }
+    }
+    return {}
+  }
+
+  const getInnerDivStyle = ({ column }: { column: { property: string } }): CSSProperties => {
+    const colName = column.property
+    if (colName.split('_')[1] === 'r') {
+      return {
+        padding: '3px',
+        borderRadius: '5px',
+        textAlign: 'center' as 'center', // Ensure type compatibility
+        height: '20px',
+        display: 'flex',
+        alignItems: 'center',
+      }
+    } else {
+      return {
+        color: 'black',
+        textAlign: 'center' as 'center', // Ensure type compatibility
+        height: '20px',
+        display: 'flex',
+        alignItems: 'center',
+      }
     }
   }
-}
 
-const getColumnLabel = (col: string): string => {
-  if (col.includes('_')) {
-    return col.split('_')[0]
+  const getColumnLabel = (col: string): string => {
+    if (col.includes('_')) {
+      return col.split('_')[0]
+    }
+    return col
   }
-  return col
-}
 
-const formatValue = (value: any): string => {
-  if (typeof value === 'number') {
-    return value.toFixed(7)
+  const formatValue = (value: any): string => {
+    if (typeof value === 'number') {
+      return value.toFixed(7)
+    }
+    return value
   }
-  return value
-}
 
-const fetchGeneNames = async (query) => {
-  loading.value = true
-  try {
-    RecommendedGNs.value = await fetchRecommendedGNsCor(query)
-  } catch (error) {
-    console.error('Error fetching gene names:', error)
-  } finally {
-    loading.value = false
+  const fetchGeneNames = async (query) => {
+    loading.value = true
+    try {
+      RecommendedGNs.value = await fetchRecommendedGNsCor(query)
+    } catch (error) {
+      console.error('Error fetching gene names:', error)
+    } finally {
+      loading.value = false
+    }
   }
-}
-const downloadResultData = () => {
-  const tsvContent = tableData.value.map((row) => Object.values(row).join('\t')).join('\n')
-  const blob = new Blob([tsvContent], { type: 'text/tab-separated-values;charset=utf-8;' })
-  const link = document.createElement('a')
-  link.href = URL.createObjectURL(blob)
-  link.download = 'resultData.tsv'
-  link.click()
-}
-onMounted(async () => {
-  await fetchData()
-})
+  const downloadResultData = () => {
+    const tsvContent = tableData.value.map((row) => Object.values(row).join('\t')).join('\n')
+    const blob = new Blob([tsvContent], { type: 'text/tab-separated-values;charset=utf-8;' })
+    const link = document.createElement('a')
+    link.href = URL.createObjectURL(blob)
+    link.download = 'resultData.tsv'
+    link.click()
+  }
+  onMounted(async () => {
+    await fetchData()
+  })
 </script>
 
 <template>
@@ -332,9 +334,9 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-.search-container {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-}
+  .search-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
 </style>

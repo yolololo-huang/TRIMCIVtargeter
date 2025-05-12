@@ -1,42 +1,47 @@
 <script setup lang="ts">
-import emailjs from '@emailjs/browser'
+  import emailjs from '@emailjs/browser'
 
-const form = ref({
-  name: '',
-  email: '',
-  message: ''
-})
+  const form = ref({
+    name: '',
+    email: '',
+    message: '',
+  })
 
-const sendEmail = async () => {
-  try {
-    const templateParams = {
-      form_name: 'Contact page',
-      user_name: form.value.name,
-      user_email: form.value.email,
-      message: form.value.message
+  const sendEmail = async () => {
+    try {
+      const templateParams = {
+        form_name: 'Contact page',
+        user_name: form.value.name,
+        user_email: form.value.email,
+        message: form.value.message,
+      }
+
+      // Send the user's email
+      await emailjs.send('service_jdp892o', 'template_sk8ay3t', templateParams, '1jduY049tSgeBvC_8')
+
+      // Send the auto-reply email
+      const autoReplyParams = {
+        to_name: form.value.name,
+        to_email: form.value.email,
+        form_name: 'Contact page',
+        message: 'Thank you for contacting us. We will process your feedback shortly.',
+      }
+      await emailjs.send(
+        'service_jdp892o',
+        'template_yoxcvqt',
+        autoReplyParams,
+        '1jduY049tSgeBvC_8'
+      )
+
+      ElMessageBox.alert('Submit success! Thank you for your feedback.', 'Success', {
+        confirmButtonText: 'OK',
+        type: 'success',
+      })
+    } catch (error) {
+      console.error('Failed to send email:', error)
+      ElMessage.error('Failed to send your message. Please try again later.')
     }
-
-    // Send the user's email
-    await emailjs.send('service_jdp892o', 'template_sk8ay3t', templateParams, '1jduY049tSgeBvC_8')
-
-    // Send the auto-reply email
-    const autoReplyParams = {
-      to_name: form.value.name,
-      to_email: form.value.email,
-      form_name: 'Contact page',
-      message: 'Thank you for contacting us. We will process your feedback shortly.'
-    }
-    await emailjs.send('service_jdp892o', 'template_yoxcvqt', autoReplyParams, '1jduY049tSgeBvC_8')
-
-    ElMessageBox.alert('Submit success! Thank you for your feedback.', 'Success', {
-      confirmButtonText: 'OK',
-      type: 'success'
-    })
-  } catch (error) {
-    console.error('Failed to send email:', error)
-    ElMessage.error('Failed to send your message. Please try again later.')
   }
-}
 </script>
 
 <template>

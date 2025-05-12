@@ -4,7 +4,7 @@ import * as d3 from 'd3'
 function ForceGraph(
   {
     nodes, // an iterable of node objects (typically [{id}, …])
-    links // an iterable of link objects (typically [{source, target}, …])
+    links, // an iterable of link objects (typically [{source, target}, …])
   },
   {
     nodeId = (d) => d.id, // given d in nodes, returns a unique identifier (string)
@@ -28,7 +28,7 @@ function ForceGraph(
     width = 540, // outer width, in pixels
     height = 400, // outer height, in pixels
     invalidation, // when this promise resolves, stop the simulation
-    onNodeClick // 添加节点点击回调函数
+    onNodeClick, // 添加节点点击回调函数
   } = {}
 ) {
   // Compute values.
