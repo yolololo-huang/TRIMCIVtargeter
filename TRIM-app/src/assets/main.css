@@ -200,3 +200,36 @@ a,
   align-items: center;
   justify-content: center;
 }
+
+.header-divider-container {
+  background-color: rgb(206, 206, 250);
+  display: flex;
+  justify-content: center;
+}
+
+.header-divider {
+  width: 980px;
+  border: 1px solid white;
+  margin: 0; /* 可根据需要调整间距 */
+}
+.intro {
+  color: rgb(94, 73, 95);
+  margin-left: 10px;
+  margin-top: 0px;
+  font-size: 1.2rem;
+  line-height: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.form-container {
+  padding: 20px;
+  background-color: rgb(206, 206, 250);
+}
+
+.form-container-row {
+  max-width: 1024px;
+  margin: 0 auto;
+  margin-bottom: 20px;
+  align-items: center;
+  justify-content: center;
+}

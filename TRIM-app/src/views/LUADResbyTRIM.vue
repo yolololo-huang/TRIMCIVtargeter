@@ -1,9 +1,9 @@
 <script setup lang="ts">
-  import { fetchResult } from '@/services/api'
+  import { getLUADpred } from '@/services/luadapi'
   import columnsData from '@/assets/columns.json'
   import SankeyGO from '@/components/SankeyGo.vue'
-  import { RadarZR } from '@/utils/radarZR.js'
-  import { RadarR } from '@/utils/radarR.js'
+  import { RadarZR } from '@/utils/radarZR'
+  import { RadarR } from '@/utils/radarR'
 
   const showGocard = ref(true)
   const showZcard = ref(true)
@@ -17,12 +17,13 @@
   const toggleRCard = () => {
     showRcard.value = !showRcard.value
   }
+
   const sortProp = ref<string>('')
   const sortOrder = ref<'ascending' | 'descending'>('ascending')
 
   const columns_info = columnsData.columns_info
   const route = useRoute()
-  const { geneName, uniprotId, cancer } = route.query
+  const { TRIMname } = route.query
   interface ResultRow {
     gene_name: string
     logFC: number
@@ -38,11 +39,9 @@
     CC: string
     [key: string]: any // Add this line to allow any additional properties
   }
-
   const resultData = ref<ResultRow[]>([])
   const drawData = ref<ResultRow[]>([])
-  const drawValue = ref(true)
-  const trimName = ref<string>('')
+  const topTargets = ref<string>('')
   const defaultColumns = [
     'gene_name',
     'logFC',
@@ -50,19 +49,15 @@
     'TRIM',
     'zrank_score',
     'prediction',
-    'probability',
     'ZRscore',
+    'probability',
     'MF',
   ]
   const selectedColumns = ref<string[]>([...defaultColumns])
-
   const currentPage = ref(1)
   const pageSize = ref(10)
   const loading = ref(false)
-  //默认值，根据selectedFilter更新filterdata
-  const selectedFilters = ref<{}>({
-    gene_name: [geneName],
-  })
+  const selectedFilters = ref<{}>({})
 
   const uniqueValues = ref<{}>({})
   const loadingOptions = ref(false)
@@ -179,13 +174,12 @@
       const blob = new Blob([tsvContent], { type: 'text/tab-separated-values;charset=utf-8;' })
       const link = document.createElement('a')
       link.href = URL.createObjectURL(blob)
-      link.download = geneName + '_' + cancer + '.tsv'
+      link.download = TRIMname + '_LUAD' + '.tsv'
       link.click()
     } catch (error) {
       console.error('Error downloading result data:', error)
     }
   }
-
   const formatValue = (value: any): string => {
     if (value === 'None' || value === null) {
       return '' // Replace 'None', null, or undefined with empty string
@@ -209,6 +203,7 @@
       }
     }
   }
+
   const resetFilters = () => {
     defaultFilters()
     selectedColumns.value = [...defaultColumns]
@@ -258,9 +253,10 @@
     const end = start + pageSize.value
     return sortedData.value.slice(start, end)
   })
+
   const handleSizeChange = (newSize) => {
     pageSize.value = newSize
-    currentPage.value = 1
+    currentPage.value = 1 //reset to first page
   }
 
   const handleCurrentChange = (newPage) => {
@@ -290,22 +286,20 @@
     sortOrder.value = order as 'ascending' | 'descending'
     currentPage.value = 1 // Reset to first page when sorting changes
   }
-
   const scaledZRscore = (response) => {
     // Normalize zrank_score for row.prediction === '1' and === null
     const zrankScores = response.result
-      .filter((row) => row.prediction !== 'None')
+      .filter((row) => row.prediction === 1)
       .map((row) => Math.abs(row.zrank_score))
     const zrankMin = Math.min(...zrankScores)
     const zrankMax = Math.max(...zrankScores)
-    // console.log('zrankMin:', zrankMin, 'zrankMax:', zrankMax)
+
     // Define the scaling factor
     // const maxZRscore = 3 / Math.sqrt(5) // Approx 1.34164
     // const scalingFactor = 100 / maxZRscore // Approx 74.535
     return response.result.map((row) => {
       if (row.prediction === 1) {
         const zrankNorm = (Math.abs(row.zrank_score) - zrankMin) / (zrankMax - zrankMin)
-        // console.log('zrankNorm:', zrankNorm)
         const R_abs = Math.abs(row.R)
         const zrscore = (2 * zrankNorm + R_abs) / Math.sqrt(5)
         // const x = row.R // x_i = R 没有normalize。
@@ -324,60 +318,65 @@
     })
   }
 
-  const drawRadarCharts = () => {
-    // Clear previous charts
-    const radarZRChartElement = document.getElementById('radar_zr')
-    if (radarZRChartElement) {
-      radarZRChartElement.innerHTML = ''
-    }
-    const radarRChartElement = document.getElementById('radar_r')
-    if (radarRChartElement) {
-      radarRChartElement.innerHTML = ''
+  watch(filteredData, (newFilteredData) => {
+    const uniqueGN = [
+      ...new Set(
+        newFilteredData
+          .filter((item) => item.zrank_score !== 0 && item.prediction !== null && item.VALUE === 1)
+          .sort((a, b) => b.ZRscore - a.ZRscore)
+          .map((item) => item.gene_name)
+      ),
+    ].slice(0, Math.min(20, newFilteredData.length))
+
+    // Update topTargets reactively
+    const newTopTargets = uniqueGN.join(',')
+    if (topTargets.value !== newTopTargets) {
+      topTargets.value = newTopTargets
     }
 
-    const radar_zr = drawData.value.map((item) => ({
-      name: item.gene_name,
-      key: item.TRIM,
-      value: item.zrank_score,
-    }))
-    const radar_r = drawData.value.map((item) => ({
-      gene_name: item.gene_name,
-      name: item.dataset,
-      key: item.TRIM,
-      value: item.R,
-    }))
+    drawData.value = resultData.value.filter((item) => uniqueGN.includes(item.gene_name))
+
+    // Prepare radar data and redraw
+    updateRadarCharts(drawData.value)
+  })
+
+  const updateRadarCharts = (data) => {
+    const radar_zr = data
+      .filter(
+        (item) =>
+          item.gene_name && item.TRIM && item.zrank_score !== undefined && item.R !== undefined
+      )
+      .map((item) => ({
+        name: item.TRIM,
+        key: item.gene_name,
+        value: item.zrank_score,
+      }))
+      .reduce((acc, current) => {
+        const existing = acc.find((item) => item.name === current.name && item.key === current.key)
+        return existing ? acc : acc.concat([current])
+      }, [])
+
+    const radar_r = data
+      .filter(
+        (item) =>
+          item.gene_name && item.TRIM && item.zrank_score !== undefined && item.R !== undefined
+      )
+      .map((item) => ({
+        gene_name: item.TRIM,
+        name: item.dataset,
+        key: item.gene_name,
+        value: item.R,
+      }))
+
+    // Clear and redraw radar charts
+    const radarZRElement = document.getElementById('radar_zr')
+    if (radarZRElement) radarZRElement.innerHTML = ''
+    const radarRElement = document.getElementById('radar_r')
+    if (radarRElement) radarRElement.innerHTML = ''
+
     radarZR(radar_zr)
     radarR(radar_r)
   }
-  watch(drawValue, (newValue) => {
-    if (newValue === true) {
-      drawData.value = resultData.value.filter(
-        (item) =>
-          item.gene_name &&
-          item.TRIM &&
-          item.zrank_score !== null &&
-          item.R !== null &&
-          item.prediction !== 0 &&
-          item.group === 'CIV'
-      )
-      trimName.value = resultData.value
-        .filter((item) => item.prediction !== 0 && item.group === 'CIV')
-        .map((item) => item.TRIM)
-        .join(',')
-    } else {
-      drawData.value = resultData.value.filter(
-        (item) =>
-          item.gene_name &&
-          item.TRIM &&
-          item.zrank_score !== null &&
-          item.R !== null &&
-          item.prediction !== 0
-      )
-      trimName.value = resultData.value.map((item) => item.TRIM).join(',')
-    }
-
-    drawRadarCharts()
-  })
   const getCircleClass = (key) => {
     switch (key) {
       case 'MF':
@@ -401,13 +400,7 @@
   onMounted(async () => {
     try {
       loading.value = true
-      const response = await fetchResult({
-        symbol: geneName,
-        type: 'gene',
-        uniprotId,
-        cancerList: cancer,
-      })
-
+      const response = await getLUADpred({ symbol: TRIMname, type: 'TRIM' })
       resultData.value = scaledZRscore(response)
         .map((row) => {
           if (row.reported !== 'None') {
@@ -423,27 +416,10 @@
           const order = ['None', true, false]
           return order.indexOf(a.prediction) - order.indexOf(b.prediction)
         })
-      console.log(
-        'resultData.value -TRIM47+SFXN1',
-        resultData.value.filter((item) => item.gene_name === 'SFXN1' && item.TRIM === 'TRIM47')
-      )
       defaultFilters()
-      drawData.value = resultData.value.filter(
-        (item) =>
-          item.gene_name &&
-          item.TRIM &&
-          item.zrank_score !== undefined &&
-          item.R !== undefined &&
-          item.prediction !== 0 &&
-          item.group === 'CIV'
-      )
-      trimName.value = resultData.value
-        .filter((item) => item.prediction !== 0 && item.group === 'CIV')
-        .map((item) => item.TRIM)
-        .join(',')
 
-      drawRadarCharts()
       const figures = document.querySelectorAll('figure')
+
       // 遍历每个 <figure> 元素并设置样式
       figures.forEach((figure) => {
         figure.style.display = 'flex'
@@ -452,7 +428,6 @@
         figure.style.alignItems = 'center'
         figure.style.margin = '0' // 可选：移除默认的外边距
 
-        // 可选：确保图片不会超出容器宽度
         const img = figure.querySelector('img')
         if (img) {
           img.style.maxWidth = '100%'
@@ -470,23 +445,13 @@
   <el-header>
     <AppHeader />
   </el-header>
+
   <div class="result-layout">
-    <h2 style="text-align: center">
-      Possible TRIMCIV members targeting {{ geneName }} ({{ uniprotId }}) in
-      {{
-        cancer
-          ? Array.from(new Set((cancer as string).split(',').map((part) => part.split('_')[0])))
-              .map((uniquePart) => uniquePart.toUpperCase())
-              .join(', ')
-          : ''
-      }}
-    </h2>
+    <h2 style="text-align: center">Possible targets of {{ TRIMname }} in LUAD</h2>
     <el-row>
       <el-col :span="5">
-        <el-card style="margin-right: 20px; margin-top: 30px; padding: 10px; margin-left: 20px">
-          <div style="font-size: large; font-weight: bold; margin: 10px">
-            Filter menu for Result Table
-          </div>
+        <el-card style="margin-right: 20px; padding: 10px; margin-left: 20px">
+          <div style="font-size: large; font-weight: bold; margin: 10px">Data filter menu</div>
           <div style="display: flex">
             <el-button @click="resetFilters">Reset</el-button>
             <el-button @click="selectedColumns = Object.keys(resultData[0])">Select All</el-button>
@@ -511,7 +476,7 @@
               <el-select
                 multiple
                 filterable
-                :disabled="!selectedColumns.includes(columnkey) || columnkey === 'gene_name'"
+                :disabled="!selectedColumns.includes(columnkey) || columnkey === 'TRIM'"
                 :loading="loadingOptions"
                 @visible-change="() => fetchSelectedOptions(columnkey)"
                 v-model="selectedFilters[columnkey]"
@@ -548,10 +513,9 @@
                   {{ columns_info.find((column) => column.key === columnkey)?.label || columnkey }}
                 </el-checkbox>
               </el-checkbox-group>
-
               <el-slider
                 :step="uniqueValues[columnkey]?.step"
-                :disabled="!selectedColumns.includes(columnkey) || columnkey === 'logFC'"
+                :disabled="!selectedColumns.includes(columnkey)"
                 v-model="selectedFilters[columnkey]"
                 :min="uniqueValues[columnkey]?.min"
                 :max="uniqueValues[columnkey]?.max"
@@ -563,17 +527,7 @@
           </div>
         </el-card>
       </el-col>
-
       <el-col :span="showGocard ? 14 : 17">
-        <div class="radar-switch">
-          <p style="font-weight: bold; margin-right: 10px">Adjusting graph :</p>
-          <el-switch
-            size="large"
-            v-model="drawValue"
-            active-text="TRIMCIV Predicted as True"
-            inactive-text="All TRIM in result"
-          />
-        </div>
         <el-row>
           <el-col :span="12">
             <el-card>
@@ -589,16 +543,16 @@
                 </div>
               </template>
               <div class="card-pics" v-show="showRcard">
-                Expression correlation effecients between {{ geneName }} and TRIMCIV members in
-                different datasets. Visit <router-link to="/resource">Data</router-link> for
-                datasets information
+                Expression correlation effecients between {{ TRIMname }} and top predicted-targtes
+                in different datasets. Visit <router-link to="/resource">Data</router-link> for
+                datasets information.
                 <div
                   id="radar_r"
                   v-loading="loading"
                   style="
                     display: flex;
                     justify-content: center;
-                    margin-top: 0px;
+                    margin-top: -10px;
                     margin-bottom: 10px;
                   "
                 ></div>
@@ -612,12 +566,15 @@
                   <template v-if="showZcard">
                     <IEpCaretBottom />
                   </template>
-                  <template v-else><IEpCaretRight /></template><span>Physical Affinity</span>
+                  <template v-else>
+                    <IEpCaretRight />
+                  </template>
+                  <span>Physical Affinity</span>
                 </div>
               </template>
               <div class="card-pics" v-show="showZcard">
-                The affinity degree between {{ geneName }} and TRIMCIV members was measured by
-                <a href="https://zlab.wenglab.org/zdock/index.shtml">Zdock-Zrank</a>,The smaller
+                The affinity degree between {{ TRIMname }} and top predicted-targtes was measured by
+                <a href="https://zlab.wenglab.org/zdock/index.shtml">Zdock-Zrank</a>, The smaller
                 score the stronger affinity.
                 <div
                   id="radar_zr"
@@ -625,7 +582,7 @@
                   style="
                     display: flex;
                     justify-content: center;
-                    margin-top: 0px;
+                    margin-top: -10px;
                     margin-bottom: 10px;
                   "
                 ></div>
@@ -633,7 +590,7 @@
             </el-card>
           </el-col>
         </el-row>
-        <h2>Result table for potential TRIM pairs</h2>
+        <h2>Result tabel for potential target pairs</h2>
         <div
           style="
             display: flex;
@@ -653,14 +610,14 @@
         </div>
         <el-table
           :cell-style="cellStyle"
+          :data="paginatedData"
+          class="custom-table"
+          :loading="loading"
           :header-cell-style="{
             background: 'rgb(206, 206, 250)',
             color: '#000000',
             borderBottom: '2px solid #000000',
           }"
-          :data="paginatedData"
-          class="custom-table"
-          :loading="loading"
           element-loading-text="Loading...take a break"
           @sort-change="handleSortChange"
         >
@@ -726,17 +683,21 @@
               <template v-if="showGocard">
                 <IEpCaretBottom />
               </template>
-              <template v-else> <IEpCaretRight /> </template><span>GO pair</span>
+              <template v-else>
+                <IEpCaretRight />
+              </template>
+              <span>GO pair</span>
             </div>
           </template>
           <div class="card-pics" v-show="showGocard">
-            <div>GO pairs between {{ geneName }} and TRIMCIV members.</div>
+            <div>GO pairs between {{ TRIMname }} and top 20 possible targets</div>
             <SankeyGO
-              v-if="trimName && trimName.length > 0"
-              :symbol1="geneName as string"
-              :symbol2="trimName"
-              :symbol3="'GN'"
-              :key="trimName.length"
+              v-if="topTargets && topTargets.length > 0"
+              :symbol1="topTargets"
+              :symbol2="TRIMname as string"
+              :symbol3="'TRIM'"
+              :key="topTargets.length"
+              style="display: flex; justify-content: center; align-items: center; margin-top: 15px"
             />
           </div>
         </el-card>
@@ -751,7 +712,6 @@
 
 <style scoped>
   .custom-card {
-    margin-top: 35px;
     margin-left: 20px;
     margin-right: 20px;
   }

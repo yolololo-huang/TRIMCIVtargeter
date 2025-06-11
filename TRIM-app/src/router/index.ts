@@ -1,7 +1,8 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
 
 const router = createRouter({
-  history: createWebHashHistory(import.meta.env.BASE_URL),
+  history: createWebHashHistory(),
+  // history: createWebHistory('/trimcivpred/'),
   routes: [
     {
       path: '/',
@@ -62,6 +63,22 @@ const router = createRouter({
       name: 'Submit',
       component: () => import('@/views/SubmitPage.vue'),
     },
+    {
+      path: '/luad',
+      name: 'luad',
+      component: () => import('@/views/Dashboard_luad.vue'),
+    },
+    {
+      path: '/luad_result',
+      name: 'luad_result',
+      component: () => import('@/views/LUADRes.vue'),
+    },
+    {
+      path: '/luad_resultbyTRIM',
+      name: 'luad_resultbyTRIM',
+      component: () => import('@/views/LUADResbyTRIM.vue'),
+    },
+    { path: '/:pathMatch(.*)*', name: 'NotFound', component: () => import('@/views/NotFound.vue') },
   ],
 })
 

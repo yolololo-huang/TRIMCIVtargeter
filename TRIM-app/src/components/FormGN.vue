@@ -61,7 +61,6 @@
         }
       }
       CancerList.value = processCancerData(responseData)
-      console.log('Cancer List:', CancerList.value)
     } catch (error) {
       console.error('Error fetching CancerList:', error)
     } finally {

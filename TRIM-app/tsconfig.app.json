@@ -5,6 +5,7 @@
     "src/**/*",
     "src/**/*.js",
     "src/**/*.ts",
+    "src/**/*.d.ts",
     "src/**/*.vue",
     "auto-imports.d.ts",
     "components.d.ts",

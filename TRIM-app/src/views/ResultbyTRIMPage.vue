@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { fetchResbyTRIM } from '@/services/api'
+  import { fetchResult } from '@/services/api'
   import columnsData from '@/assets/columns.json'
   import SankeyGO from '@/components/SankeyGo.vue'
   import { RadarZR } from '@/utils/radarZR'
@@ -79,11 +79,9 @@
     }
 
     const zrankScores = resultData.value.map((row) => row.zrank_score)
-    const predictedProbas = resultData.value
-      .map((row) => Number(row.probability))
-      .filter((val) => !isNaN(val))
-    const logFCs = resultData.value.map((row) => Number(row.logFC)).filter((val) => !isNaN(val))
-    const Rs = resultData.value.map((row) => Number(row.R)).filter((val) => !isNaN(val))
+    const predictedProbas = resultData.value.map((row) => Number(row.probability))
+    const logFCs = resultData.value.map((row) => Number(row.logFC))
+    const Rs = resultData.value.map((row) => Number(row.R))
     const ZRscores = resultData.value.map((row) => row.ZRscore)
 
     selectedFilters.value = {
@@ -98,21 +96,21 @@
     uniqueValues.value = {
       ...uniqueValues.value,
       zrank_score: {
-        min: Math.min(...zrankScores),
-        max: Math.max(...zrankScores),
+        min: Math.min(...zrankScores) - 1,
+        max: Math.max(...zrankScores) + 1,
         marks: {
-          [Math.min(...zrankScores)]: Math.min(...zrankScores).toString(),
-          [Math.max(...zrankScores)]: Math.max(...zrankScores).toString(),
+          [Math.min(...zrankScores)]: (Math.min(...zrankScores) - 1).toString(),
+          [Math.max(...zrankScores)]: (Math.max(...zrankScores) + 1).toString(),
         },
         step: 1,
       },
       logFC: {
-        min: Math.min(...logFCs),
-        max: Math.max(...logFCs),
+        min: Math.min(...logFCs) - 1,
+        max: Math.max(...logFCs) + 1,
         marks: {
-          [Math.min(...logFCs)]: Math.min(...logFCs).toString(),
+          [Math.min(...logFCs)]: (Math.min(...logFCs) - 1).toString(),
           0: '0',
-          [Math.max(...logFCs)]: Math.max(...logFCs).toString(),
+          [Math.max(...logFCs)]: (Math.max(...logFCs) + 1).toString(),
         },
         step: 0.1,
       },
@@ -128,13 +126,14 @@
       },
       ZRscore: {
         min: 0,
-        max: 100,
+        max: 1.5,
         marks: {
           '0': '0',
-          '50': '50',
-          '100': '100',
+          '0.5': '0.5',
+          '1': '1',
+          '1.5': '1.5',
         },
-        step: 1,
+        step: 0.1,
       },
       probability: {
         min: 0,
@@ -166,10 +165,9 @@
 
   const downloadResultData = () => {
     try {
-      console.log('start downloading')
-      const headers = Object.keys(resultData.value[0])
+      const headers = Object.keys(sortedData.value[0])
       const tsvHeaders = headers.join('\t')
-      const tsvRows = resultData.value.map((row) => Object.values(row).join('\t')).join('\n')
+      const tsvRows = sortedData.value.map((row) => Object.values(row).join('\t')).join('\n')
       const tsvContent = `${tsvHeaders}\n${tsvRows}`
       const blob = new Blob([tsvContent], { type: 'text/tab-separated-values;charset=utf-8;' })
       const link = document.createElement('a')
@@ -219,27 +217,43 @@
         return rowValue === 'None'
       }
     } else if (typeof filterValue[0] === 'number') {
-      // 如果筛选条件是范围，空值直接保留，不参与筛选
-      return rowValue === 'None' || (rowValue >= filterValue[0] && rowValue <= filterValue[1])
+      return rowValue >= filterValue[0] && rowValue <= filterValue[1]
+    } else if (typeof filterValue[0] === 'string') {
+      if (filterValue.includes(rowValue)) {
+        return true
+      }
     } else {
-      // 如果筛选条件是数组，空值直接保留
-      return rowValue === 'None' || filterValue.length === 0 || filterValue.includes(rowValue)
+      return true
     }
   }
 
   // 不能用foreach
   const filteredData = computed(() => {
-    return resultData.value.filter((row) => {
-      // 使用 every 确保所有 key 都匹配
+    console.log('selectedFilters', selectedFilters.value)
+    const filtered = resultData.value.filter((row) => {
       return Object.keys(selectedFilters.value).every((key) => {
-        if (!isMatch(key, selectedFilters.value[key], row[key])) {
-          return false // 如果某个 key 不匹配，提前返回 false
-        }
-        return true // 当前 key 匹配
+        return isMatch(key, selectedFilters.value[key], row[key])
       })
     })
+    return filtered
   })
-
+  //从计算属性改为响应式还是出现二次计算且数据不完整
+  // watch(
+  //   selectedFilters,
+  //   (filters) => {
+  //     console.log('Watch triggered:', filters)
+  //     filteredData.value = resultData.value.filter((row) => {
+  //       // if (row['gene_name'] === 'SMAD4') {
+  //       //   console.log('row', row)
+  //       //   console.log('selectedFilters', selectedFilters.value)
+  //       // }
+  //       return Object.keys(selectedFilters.value).every((key) => {
+  //         return isMatch(key, selectedFilters.value[key], row[key])
+  //       })
+  //     })
+  //   },
+  //   { deep: true } // 禁止初始化时立即执行
+  // )
   const fetchSelectedOptions = async (columnkey: string) => {
     loadingOptions.value = true
     //对于el-selected
@@ -289,26 +303,29 @@
   const scaledZRscore = (response) => {
     // Normalize zrank_score for row.prediction === '1' and === null
     const zrankScores = response.result
-      .filter((row) => row.prediction === 1)
+      .filter((row) => row.prediction !== 'None')
       .map((row) => Math.abs(row.zrank_score))
     const zrankMin = Math.min(...zrankScores)
     const zrankMax = Math.max(...zrankScores)
-
+    // console.log('zrankMin:', zrankMin, 'zrankMax:', zrankMax)
     // Define the scaling factor
-    const maxZRscore = 3 / Math.sqrt(5) // Approx 1.34164
-    const scalingFactor = 100 / maxZRscore // Approx 74.535
+    // const maxZRscore = 3 / Math.sqrt(5) // Approx 1.34164
+    // const scalingFactor = 100 / maxZRscore // Approx 74.535
     return response.result.map((row) => {
       if (row.prediction === 1) {
         const zrankNorm = (Math.abs(row.zrank_score) - zrankMin) / (zrankMax - zrankMin)
-        const x = row.R // x_i = R 没有normalize。
-        const y = zrankNorm // y_i = norm(zrank_score)
-        // Projection calculations
-        const x_p = (x + 2 * y) / 5
-        const y_p = (x + 2 * y) / 10
+        // console.log('zrankNorm:', zrankNorm)
+        const R_abs = Math.abs(row.R)
+        const zrscore = (2 * zrankNorm + R_abs) / Math.sqrt(5)
+        // const x = row.R // x_i = R 没有normalize。
+        // const y = zrankNorm // y_i = norm(zrank_score)
+        // // Projection calculations
+        // const x_p = (x + 2 * y) / 5
+        // const y_p = (x + 2 * y) / 10
 
-        // Compute ZRscore and scale
-        const zrscore = Math.sqrt(x_p ** 2 + y_p ** 2) //d
-        row.ZRscore = zrscore * scalingFactor // Scale to [0, 100]
+        // // Compute ZRscore and scale
+        // const zrscore = Math.sqrt(x_p ** 2 + y_p ** 2) //d
+        row.ZRscore = zrscore //* scalingFactor // Scale to [0, 100]
       } else {
         row.ZRscore = null // Handle non-applicable rows
       }
@@ -397,24 +414,28 @@
   onMounted(async () => {
     try {
       loading.value = true
-      const response = await fetchResbyTRIM({ TRIMname, uniprotId, cancer })
+      const response = await fetchResult({
+        symbol: TRIMname,
+        type: 'TRIM',
+        uniprotId,
+        cancerList: cancer,
+      })
       resultData.value = scaledZRscore(response)
         .map((row) => {
           if (row.reported !== 'None') {
             row.prediction = row.reported
           } else if (row.prediction === 0) {
-            row.prediction = false
+            row.prediction = 'false'
           } else if (row.prediction === 1) {
-            row.prediction = true
+            row.prediction = 'true'
           }
           return row
         })
         .sort((a, b) => {
-          const order = ['None', true, false]
+          const order = ['None', 'true', 'false']
           return order.indexOf(a.prediction) - order.indexOf(b.prediction)
         })
       defaultFilters()
-
       const figures = document.querySelectorAll('figure')
 
       // 遍历每个 <figure> 元素并设置样式

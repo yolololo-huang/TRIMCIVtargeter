@@ -72,6 +72,7 @@ declare module 'vue' {
     IEpQuestionFilled: typeof import('~icons/ep/question-filled')['default']
     IEpSchool: typeof import('~icons/ep/school')['default']
     IEpWarningFilled: typeof import('~icons/ep/warning-filled')['default']
+    LUADForm: typeof import('./src/components/LUADForm.vue')['default']
     PDBviewer2: typeof import('./src/components/PDBviewer2.vue')['default']
     ResOverview: typeof import('./src/components/ResOverview.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

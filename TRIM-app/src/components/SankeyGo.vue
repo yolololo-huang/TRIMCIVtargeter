@@ -85,7 +85,6 @@
     width: 280,
     height: document.getElementById('sankeygo_chart')?.clientHeight,
   })
-  console.log('height', sankeygo)
   const drawChart = async () => {
     loading.value = true
     const data = await prepareData(props.symbol1, props.symbol2, props.symbol3)

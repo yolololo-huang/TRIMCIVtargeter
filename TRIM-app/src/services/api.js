@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-// const API_BASE_URL = '/backend/api' //import.meta.env.VITE_API_BASE_URL
-const API_BASE_URL = '/api'
+const API_BASE_URL = '/backend/api' //import.meta.env.VITE_API_BASE_URL
+// const API_BASE_URL = '/api'
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -192,18 +192,6 @@ export const fetchRecommendedGNsUid = async (geneName) => {
 export const fetchResult = async (formData) => {
   try {
     const response = await apiClient.get(`/submitForm`, {
-      params: formData,
-    })
-    return response.data
-  } catch (error) {
-    console.error('Error submitting form:', error)
-    throw error
-  }
-}
-
-export const fetchResbyTRIM = async (formData) => {
-  try {
-    const response = await apiClient.get(`/submitFormbyTRIM`, {
       params: formData,
     })
     return response.data

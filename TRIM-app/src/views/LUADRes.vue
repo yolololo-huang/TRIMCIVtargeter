@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { fetchResult } from '@/services/api'
+  import { getLUADpred } from '@/services/luadapi'
   import columnsData from '@/assets/columns.json'
   import SankeyGO from '@/components/SankeyGo.vue'
   import { RadarZR } from '@/utils/radarZR.js'
@@ -22,7 +22,7 @@
 
   const columns_info = columnsData.columns_info
   const route = useRoute()
-  const { geneName, uniprotId, cancer } = route.query
+  const { geneName } = route.query
   interface ResultRow {
     gene_name: string
     logFC: number
@@ -133,14 +133,13 @@
       },
       ZRscore: {
         min: 0,
-        max: 1.5,
+        max: 100,
         marks: {
           '0': '0',
-          '0.5': '0.5',
-          '1': '1',
-          '1.5': '1.5',
+          '50': '50',
+          '100': '100',
         },
-        step: 0.1,
+        step: 1,
       },
       probability: {
         min: 0,
@@ -179,7 +178,7 @@
       const blob = new Blob([tsvContent], { type: 'text/tab-separated-values;charset=utf-8;' })
       const link = document.createElement('a')
       link.href = URL.createObjectURL(blob)
-      link.download = geneName + '_' + cancer + '.tsv'
+      link.download = geneName + '_LUAD' + '.tsv'
       link.click()
     } catch (error) {
       console.error('Error downloading result data:', error)
@@ -296,16 +295,14 @@
     const zrankScores = response.result
       .filter((row) => row.prediction !== 'None')
       .map((row) => Math.abs(row.zrank_score))
-    const zrankMin = Math.min(...zrankScores)
-    const zrankMax = Math.max(...zrankScores)
-    // console.log('zrankMin:', zrankMin, 'zrankMax:', zrankMax)
+    const zrankMin = Math.min(...zrankScores) - 1
+    const zrankMax = Math.max(...zrankScores) + 1
     // Define the scaling factor
     // const maxZRscore = 3 / Math.sqrt(5) // Approx 1.34164
     // const scalingFactor = 100 / maxZRscore // Approx 74.535
     return response.result.map((row) => {
       if (row.prediction === 1) {
         const zrankNorm = (Math.abs(row.zrank_score) - zrankMin) / (zrankMax - zrankMin)
-        // console.log('zrankNorm:', zrankNorm)
         const R_abs = Math.abs(row.R)
         const zrscore = (2 * zrankNorm + R_abs) / Math.sqrt(5)
         // const x = row.R // x_i = R 没有normalize。
@@ -401,12 +398,7 @@
   onMounted(async () => {
     try {
       loading.value = true
-      const response = await fetchResult({
-        symbol: geneName,
-        type: 'gene',
-        uniprotId,
-        cancerList: cancer,
-      })
+      const response = await getLUADpred({ symbol: geneName, type: 'gene' })
 
       resultData.value = scaledZRscore(response)
         .map((row) => {
@@ -423,10 +415,6 @@
           const order = ['None', true, false]
           return order.indexOf(a.prediction) - order.indexOf(b.prediction)
         })
-      console.log(
-        'resultData.value -TRIM47+SFXN1',
-        resultData.value.filter((item) => item.gene_name === 'SFXN1' && item.TRIM === 'TRIM47')
-      )
       defaultFilters()
       drawData.value = resultData.value.filter(
         (item) =>
@@ -471,16 +459,7 @@
     <AppHeader />
   </el-header>
   <div class="result-layout">
-    <h2 style="text-align: center">
-      Possible TRIMCIV members targeting {{ geneName }} ({{ uniprotId }}) in
-      {{
-        cancer
-          ? Array.from(new Set((cancer as string).split(',').map((part) => part.split('_')[0])))
-              .map((uniquePart) => uniquePart.toUpperCase())
-              .join(', ')
-          : ''
-      }}
-    </h2>
+    <h2 style="text-align: center">Possible Pairs of {{ geneName }} in LUAD</h2>
     <el-row>
       <el-col :span="5">
         <el-card style="margin-right: 20px; margin-top: 30px; padding: 10px; margin-left: 20px">
